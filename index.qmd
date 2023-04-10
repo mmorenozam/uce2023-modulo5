@@ -1,11 +1,584 @@
 ---
-title: "uce2023-modulo5"
+title: "Estadística aplicada con R"
+subtitle: "Módulo 5: Otros métodos estadísticos"
+title-slide-attributes:
+  data-background-image: images/logo.jpeg
+  data-background-size: contain
+  data-background-opacity: "0.2"
+author: 
+  - name: Mauricio Moreno, PhD
+logo: images/logo.jpeg
+format: 
+  revealjs:
+    css: styles.css
+    slide-number: true
+    width: 1366
+    preview-links: auto
+    touch: true
+    chalkboard:
+      theme: whiteboard
+      boardmarker-width: 4
+      buttons: false
+    revealjs-plugins:
+      - pointer
 ---
 
-This is a Quarto website.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+# Regresión lineal múltiple 
 
-```{r}
-1 + 1
+## Introducción
+
+::: incremental
+
+-   Es una extensión de la regresión lineal (simple) con la que concluimos el módulo anterior.
+
+-   Es usada para predecir una sola variable continua (y) en función de múltiples predictores continuos (un set de variables X).
+
+-   Tiene prácticamente los mismos supuestos que la regresión lineal simple:
+
+    -   Linearidad de los predictores
+    
+    -   Homogeneidad de la varianza (homocedasticidad)
+    
+    -   Independencia de los errores (residuos)
+    
+    -   Normalidad de los residuos
+    
+    -   Independencia de los predictores
+
+-   Un ejemplo de una regresión múltiple podría expresarse mediante la siguiente ecuación
+
+:::
+
+. . . 
+
+```{=tex}
+\begin{align}
+y &= \beta_0 + \beta_1\,X_1 + \beta_2\,X_2 \dots \beta_n\,X_n
+\end{align}
 ```
+
+## Pasos para una regresión múltiple {.smaller .scrollable}
+
+::: incremental
+
+-   A diferencia de la regresión lineal simple, no existe un proceso estructurado de pasos a seguir en el caso de su extensión a dos o más variables continuas como predictores.
+
+-   El llegar a un modelo apropiado se convierte en lo que algunos estadísticos llaman el "arte de modelar".
+
+-   En las siguientes diapositivas voy a presentar la manera en que usualmente hago este tipo de modelos y que resumiré en:
+
+    1.    Empezar por lo que se le conoce como un modelo completo (incluyendo todas las variables continuas disponibles).
+    
+    2.    Realizar una selección automática de variables sobre el modelo del paso 1.
+    
+    3.    Checar manualmente por colinearidad entre las variables del modelo resultante del paso 2.
+    
+    4.    Revisar si las variables incluidas tienen sentido (biológico),
+    
+    5.    Checar los supuestos de normalidad y homocedasticidad.
+    
+    6.    Realizar transformaciones de ser necesario.
+    
+    7.    Interpretar resultados.
+    
+-   Estos pasos no representan una línea recta. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis dependerán más de su buen entendimiento de los datos y los fenómenos que deseen explicar.
+
+:::
+
+## Datos que usaremos {.smaller}
+
+::: incremental
+
+-   Usaremos los datos de rotavirus en Berlin del archivo de Excel "rotXLS.xlsx" que contiene información sobre el conteo de casos de rotavirus en Berlín desde el año 2001 hasta el 2020.
+
+-   Supongámos que queremos modelar la variable `cases` en función de todas las variables metereológicas a nuestra disposición. Para esto, recordemos la descripción de esta tabla de datos
+
+:::
+
+::: columns
+::: {.column width="50%" .fragment}
+-   `date`: fecha de cierre de la toma de datos
+
+-   `cases`: número de casos de rotavirus en la semana
+
+-   `week`: semana epidemiológica
+
+-   `incidence`: número de casos/100000 habitantes
+
+-   `FM`: media diaria de velocidad del viento (m/s)
+
+-   `RSK`: media diaria de lluvia (mm)
+:::
+
+::: {.column width="50%" .fragment}
+-   `SHK_TAG`: media diaria de nieve (cm)
+
+-   `PM`: media diaria de presión atmosférica (hPa)
+
+-   `TMK`: media diaria de temperatura (°C)
+
+-   `TXK`: media diaria de temperatura máxima (°C)
+
+-   `TNK`: media diaria de temperatura mínima (°C)
+
+-   `UPM`: media diaria de humedad relativa (%)
+:::
+:::
+
+. . .
+
+-   Sin embargo, antes de continuar, debemos hacer un preprocesamiento de datos ya que en la estructura original de estos se considera un efecto temporal dado por los años. Para simplificarlo, agruparemos los datos por meses y semanas epidemiológicas.
+
+
+## Preprocesamiento de datos {visibility="uncounted"}
+
+. . . 
+
+-   Asegúrate de tener instaladas las librerías `dplyr` y `lubridate` antes de correr este código
+
+```{r echo=T, eval=T, error=T}
+library(dplyr)
+library(readxl)
+library(lubridate)
+rot_berlin <- read_excel("rotXLS.xlsx")
+rot_berlin$month <- month(rot_berlin$date)
+rot_berlin <- rot_berlin %>%
+  group_by(month, week) %>%
+  summarise(incidence = mean(incidence),
+            cases = round(mean(cases),0),
+            FM = mean(FM),
+            RSK = mean(RSK),
+            SHK_TAG = mean(SHK_TAG),
+            PM = mean(PM),
+            TMK = mean(TMK),
+            TXK = mean(TXK),
+            TNK = mean(TNK),
+            UPM = mean(UPM))
+```
+
+## Modelo completo
+
+. . .
+
+-   Empezaremos formulando un modelo completo para estos datos de la siguiente manera:
+
+```{r echo=T, eval=T, error=T}
+lm1 <- lm(cases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + TNK + UPM, data = rot_berlin)
+```
+
+::: incremental
+
+-   En la función `lm` se pueden incluir términos de órdenes superiores (interacciones, cuadrados, cubos, etc) con variables continuas.
+
+-   Por simplicidad, únicamente consideraremos predictores de primer orden.
+
+-   Además que para modelos no lineales es mejor usar funciones adecuadas (`lm` estima los parámetros usando el algoritmo de máxima probabilidad y puede simplemente no servir).
+
+:::
+
+
+## Selección de variables {.smaller}
+
+::: incremental
+
+-   La selección automática de variables funciona con un algoritmo relativamente sencillo:
+
+    -   Retira una variable a la vez del modelo, calcula un criterio de comparación y repite el proceso
+    
+    -   Usa ese criterio de comparación con respecto a un modelo nulo (sin ningún predictor) y devuelve el modelo que haya obtenido la mejor valoración.
+    
+-   El criterio de evaluación más usado para comparar modelos es el denominado criterio de información de Akaike (AIC), y es un estimador del error de predicción. Mientras menos sea el valor de AIC, mejores las predicciones que un modelo teoricamente será capaz de realizar.
+
+-   Realizamos la selección de variables antes de cualquier diagnóstico o transformación ya que a veces estas últimas "exageran" la importancia de las variables en el caso de hacer la selección después.
+
+-   La manera más sencilla de hacer una selección de variables es usando la función base de R `step` 
+
+:::
+
+. . .
+
+```{r echo=T, eval=F, error=T}
+step(lm1)
+```
+
+## Selección de variables {.smaller visibility="uncounted"}
+
+```{r echo=T, eval=T, error=T}
+step(lm1)
+```
+
+## Multicolinearidad {.smaller}
+
+. . .
+
+-   De acuerdo a la selección automática, nuestro modelo sería hasta el momento:
+
+```{r echo=T, eval=F, error=T}
+cases ~ FM + PM + TMK + TXK + UPM
+```
+
+::: incremental
+
+-   Ningún método de selección de variables automático es perfecto. 
+
+-   En este caso, aunque obvio, sabemos que las variables `TMK` y `TXK` deben estar correlacionadas al ser medidas de temperatura correspondientes al mismo día.
+
+-   Bien podríamos deshechar una de las dos, pero cuando no sabemos la naturaleza de las variables, es mejor llevar a cabo un análisis de correlación antes de checar el modelo por sus supuestos.
+
+-   En el módulo de AED ya hicimos una primera aproximación con las matrices de dispersión. Sin embargo, en ellas solo vimos el coeficiente de correlación junto al código de significancia.
+
+-   Para estar seguros de que eliminaremos variables correctamente, es mejor dar un vistazo a las matrices de correlación directamente.
+
+:::
+
+## Matrices de correlación {.scrollable .smaller}
+
+. . .
+
+-   Para calcular la matriz de correlación de un conjunto de datos usaremos la librería `Hmisc`
+
+. . .
+
+```{r echo=T, eval=T, error=T}
+library(Hmisc)
+matriz <- rcorr(as.matrix(rot_berlin[,c(5, 8, 9, 10, 12)]))
+matriz
+```
+
+. . .
+
+-   En este paso, recomiendo el mirar por fuera de la diagonal y eliminar del análisis una variable de cualquier par que tenga un coeficiente de correlación exactamente igual a 1. En este caso, eliminaré `TMK`
+
+## ¿Tiene todo esto sentido? {.smaller}
+
+-   Hasta aquí, nuestro modelo candidato sería el siguiente
+
+. . .
+
+```{r echo=T, eval=F, error=T}
+cases ~ FM + PM + TXK + UPM
+```
+
+::: incremental
+
+-   Los algoritmos usados aplican criterios estadísticos, no biológicos (o generalizando, del problema en cuestión)
+
+-   Considerando que el rotavirus se contagia principalmente por contacto directo o indirecto con heces fecales de alguien infectado ¿tiene sentido mantener las variables `FM` (velocidad media diaria del viento) y `PM` (presión atmosférica media diaria) como parte del modelo?
+
+-   Personalmente, pienso que no. Para mí, el modelo candidato sería el siguiente
+
+:::
+
+. . .
+
+```{r echo=T, eval=F, error=T}
+lm2 <- lm(cases ~ TXK + UPM, data = rot_berlin)
+```
+
+## Diagnósticos de la regresión múltiple {.smaller}
+
+::: incremental
+
+-   Una vez que tengo definido mi modelo candidato lo pondré a prueba de los supuestos:
+
+:::
+
+. . .
+
+```{r echo=T, eval=T, error=T}
+lm2 <- lm(cases ~ TXK + UPM, data = rot_berlin)
+```
+
+::: incremental
+
+-   Vamos a introducir otra librería muy útil cuando nos encontramos ante modelos de múltiples variables: `performance`.
+
+-   `performance` nos ofrece la posibilidad de chequear dos diagnósticos adicionales:
+
+    -   La predicción del modelo (basándose en una aproximación Bayesiana)
+    
+    -   La colinearidad
+    
+-   También se lo puede utilizar para modelos univariables (como la regresión lineal).
+
+:::
+
+. . .
+
+```{r echo=T, eval=F, error=T}
+library(performance)
+check_model(lm2)
+```
+
+## Diagnósticos de la regresión múltiple {.smaller visibility="uncounted"}
+
+```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+library(performance)
+check_model(lm2)
+```
+
+## Diagnósticos de la regresión múltiple {.smaller visibility="uncounted"}
+
+::: {.columns .v-center-container}
+::: {.column .fragment width="40%"}
+![](images/Rplot.png){fig-align="center"}
+:::
+
+::: {.column .fragment width="60%"}
+**Chequeo de la predicción posterior**
+
+Este gráfico contrapone la densidad de la distribución de la variable de respuesta con las densidades de las predicciones obtenidas del modelo mediante un proceso de sampleo Bayesiano (por eso apreciamos varias líneas azules). Nos da una idea de qué tan adecuado es nuestro modelo para predecir los valores observados. Idealmente estas dos deberían superponerse.
+
+:::
+:::
+
+## Diagnósticos de la regresión múltiple {.smaller visibility="uncounted"}
+
+::: {.columns .v-center-container}
+::: {.column .fragment width="40%"}
+```{r echo=F, eval=T, error=T, message = F, warning=F, fig.height=4.5, fig.width=6}
+coli <- check_collinearity(lm2)
+plot(coli)
+```
+:::
+
+::: {.column .fragment width="60%"}
+**Chequeo de la colinearidad**
+
+Aquí vemos distribuidas en el eje X cada una de las variables que estamos usando como predictores mientras que en el eje Y tenemos el factor de inflación de la varianza (VIF) que cada una de estas contribuye al modelo. Nos da una idea de que variables podríamos eliminar basados en mantener únicamente variables independientes entre sí como predictores.
+
+:::
+:::
+
+## Transformaciones {.smaller}
+
+::: incremental
+
+-   Del gráfico de la predicción posterior evidenciamos que los datos observados de incidencia de rotavirus son asimétricos hacia la izquierda (o asimetría positiva).
+
+-   Usualmente la transformación que mejor funciona en este caso es el logaritmo natural (de hecho el resto de datos que hemos usado en el curso coincidentalmente han presentado el mismo tipo de asimetría).
+
+:::
+
+. . . 
+
+```{r echo=T, eval=F, error=T}
+#| code-line-numbers: "1|2"
+lm3 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin)
+check_model(lm3)
+```
+
+
+```{r echo=F, eval=T, error=T}
+lm3 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin )
+``` 
+
+## Transformaciones {.smaller visibility="uncounted" .scrollable}
+
+```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+library(performance)
+check_model(lm3)
+```
+
+## Modelo final {.smaller .scrollable}
+
+::: incremental
+
+-   Una vez que hemos llegado a nuestro modelo, revisamos los resultads (este paso lo pudimos hacer en cada paso)
+
+:::
+
+. . . 
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+summary(lm3)
+```
+
+
+
+## Interpretación {.smaller .scrollable}
+
+. . . 
+
+```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+summary(lm3)
+```
+
+. . .
+
+-   Haremos uso nuevamente de la librería `ggeffects` para lidiar con la retransformación y `ggplot2` junto a `patchwork` para graficar las predicciones.
+
+```{r echo=T, eval=T, error=T}
+library(ggeffects)
+library(ggplot2)
+library(patchwork)
+predicciones <- ggpredict(lm3)
+predicciones[[1]]
+```
+
+
+. . .
+
+```{r echo=T, eval=T, error=T}
+predicciones[[2]]
+```
+
+. . .
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=4}
+p1 <- predicciones[[1]]
+p2 <- predicciones[[2]]
+plot(p1) + plot(p2)
+```
+
+## Ejercicio 5.1 {.smaller}
+
+-   Realiza un modelo de regresión lineal múltiple para los mismos datos que acabas de ver siguiendo tu propia iniciativa:
+
+    -   Puedes cambiar el orden de los pasos que sugerí
+    
+    -   Realizar chequeos de la significancia de los coeficientes de los modelos candidatos entre paso y paso (cosa que yo no hice)
+    
+    -   Puedes llevar a cabo una selección de variables manual, o cambiar el argumento `direction` de la función `step` por "forward" o "backward"
+    
+# Antes de continuar
+
+## Sobre el $R^2$ de nuevo {.smaller .scrollable}
+
+::: incremental
+
+-   Como mencioné al final del anterior módulo, el coeficiente de determinación es una métrica mal usada.
+
+-   Librerías como `performance` que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas [a la fecha](https://easystats.github.io/performance/index.html){target="_blank"} (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que "mide" que tan bueno es un modelo.
+
+-   Aunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.
+
+-   Mediante la función `compare_performance`, se puede obtener un gráfico de telarañas que permite ver como el $R^2$ no sirve de nada ante modelos mejor formulados.
+
+-   En la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del $R^2$ (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a nuestro alcance los supuestos del método). 
+
+:::
+
+. . .
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=5, fig.height=5}
+rot_berlin$cases_comp <- rot_berlin$cases + 1 
+lm3 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin)
+plot(compare_performance(lm1, lm2, lm3))
+```
+
+## Sobre el $R^2$ de nuevo {.smaller .scrollable visibility="uncounted"}
+
+. . .
+
+-   Solo para tener una idea, ya que no vimos los diagnósticos del modelo que según el $R^2$ sería el mejor, démosles un vistazo ahora
+
+. . .
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+check_model(lm1)
+```
+
+# Introducción a modelos lineales generalizados
+
+## ¿Qué son los modelos lineales generalizados? {.smaller}
+
+::: incremental
+
+-   En breve, los modelos lineales generalizados son aquellos que no consideran normalmente distribuida a la variable de interés.
+
+-   Toman este nombre ya que generalizan la regresión lineal al permitirle relacionarse con la variable de respuesta a través de una función de enlace que transforma a esta última a la escala normal.
+
+-   Por tanto, estos modelos también compartirán los supuestos de la homogeneidad de la varianza y normalidad de los residuos. Aunque dependiendo de cada función de enlace a usarse, habrán otros estadísticos de interés.
+
+-   Son especialmente útiles en casos como los que mencioné durante los "pasas para realizar un estudio" donde remarcamos la importancia de tener en mente si la variable de respuesta a medir puede o no ser modelada bajo el paradigma normal.
+
+-   En vista de lo basta que es la metodología dentro de este apartado de la estadística, nos enfocaremos en tan solo dos ejemplos:
+
+    -   La regresión de Poisson
+    
+    -   La regresión binomial negativa
+
+:::
+
+
+## Regresión de Poisson en R
+
+::: incremental
+
+-   En breve, la regresión de Poisson se usa para el modelado de datos discretos que representan el conteo de algún evento.
+
+-   En el ejemplo que consideramos anteriormente, el número de casos de rotavirus es un ejemplo de este tipo de eventos.
+
+-   La razón por la que ese modelo funcionó relativamente bien es porque inadvertidamente impusimos la función de enlace sobre los datos al aplicar la transformación logarítmica.
+
+-   Veamos que sucede al implementarla en R
+
+:::
+
+. . .
+
+```{r echo=T, eval=F, error=T, fig.align='center', fig.width=8, fig.height=10}
+glm1 <- glm(cases ~ TXK + UPM, data = rot_berlin, family = "poisson")
+check_model(glm1)
+```
+
+## Regresión de Poisson en R
+
+```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+glm1 <- glm(cases ~ TXK + UPM, data = rot_berlin, family = "poisson")
+check_model(glm1)
+```
+
+## Regresión binomial negativa {.smaller}
+
+::: incremental
+
+-   Vemos que el modelo usando la regresión de Poisson no mejora mucho en términos de los supuestos.
+
+-   Como mencionamos, el gráfico de sobredispersión ya nos da un indicativo de que el modelo es incorrecto.
+
+-   Una alternativa para lidiar con sobredispersión es usar la regresión binomial negativa
+
+-   Para ello, usaremos la librería `MASS` que ofrece esta funcionalidad
+
+:::
+
+. . . 
+
+```{r echo=T, eval=F, error=T, fig.align='center', fig.width=8, fig.height=10}
+library(MASS)
+glm2 <- glm.nb(cases ~ TXK + UPM, data = rot_berlin)
+check_model(glm2)
+```
+
+## Regresión binomial negativa {.smaller}
+
+```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+library(MASS)
+glm2 <- glm.nb(cases ~ TXK + UPM, data = rot_berlin)
+check_model(glm2)
+```
+
+## Comparación de modelos
+
+::: incremental
+
+-   Comparemos primero todos los modelos que hemos llevado a cabo hasta aquí
+
+:::
+
+. . .
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+compare_performance(lm1, lm2, lm3, glm1, glm2, rank = T)
+```
+
+# Antes de terminar
+
+## JASP
+
+![](images/jasp.png){fig-align="center"}
+
+## ¡Gracias!

@@ -1,0 +1,415 @@
+[
+  {
+    "objectID": "index.html#contenidos-de-este-módulo",
+    "href": "index.html#contenidos-de-este-módulo",
+    "title": "Estadística aplicada con R",
+    "section": "Contenidos de este módulo",
+    "text": "Contenidos de este módulo\n\n\nRegresión lineal múltiple\nIntroducción a modelo lineales generalizados\nAnálisis de Componentes Principales"
+  },
+  {
+    "objectID": "index.html#regresión-lineal-múltiple",
+    "href": "index.html#regresión-lineal-múltiple",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión lineal múltiple",
+    "text": "Regresión lineal múltiple\n\n\nEs una extensión de la regresión lineal (simple) con la que concluimos el módulo anterior.\nEs usada para predecir una sola variable continua (y) en función de múltiples predictores continuos (un set de variables X).\nTiene prácticamente los mismos supuestos que la regresión lineal simple:\n\nLinearidad de los predictores\nHomogeneidad de la varianza (homocedasticidad)\nIndependencia de los errores (residuos)\nNormalidad de los residuos\nIndependencia de los predictores\n\nUn ejemplo de una regresión múltiple podría expresarse mediante la siguiente ecuación\n\n\n\n\\[\\begin{align}\ny &= \\beta_0 + \\beta_1\\,X_1 + \\beta_2\\,X_2 \\dots \\beta_n\\,X_n\n\\end{align}\\]"
+  },
+  {
+    "objectID": "index.html#regresión-múltiple-en-r",
+    "href": "index.html#regresión-múltiple-en-r",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión múltiple en R",
+    "text": "Regresión múltiple en R"
+  },
+  {
+    "objectID": "index.html#jums",
+    "href": "index.html#jums",
+    "title": "Estadística aplicada con R",
+    "section": "jums",
+    "text": "jums\n\nlibrary(readxl)"
+  },
+  {
+    "objectID": "index.html#regresión-múltiple-en-r-1",
+    "href": "index.html#regresión-múltiple-en-r-1",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión múltiple en R",
+    "text": "Regresión múltiple en R"
+  },
+  {
+    "objectID": "index.html#regresión-múltiple-en-r-2",
+    "href": "index.html#regresión-múltiple-en-r-2",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión múltiple en R",
+    "text": "Regresión múltiple en R"
+  },
+  {
+    "objectID": "index.html#diagnósticos-de-la-regresión-múltiple",
+    "href": "index.html#diagnósticos-de-la-regresión-múltiple",
+    "title": "Estadística aplicada con R",
+    "section": "Diagnósticos de la regresión múltiple",
+    "text": "Diagnósticos de la regresión múltiple\n\n\nUna vez que tengo definido mi modelo candidato lo pondré a prueba de los supuestos:\n\n\n\n\nlm2 &lt;- lm(cases ~ TXK + UPM, data = rot_berlin)\n\n\n\nVamos a introducir otra librería muy útil cuando nos encontramos ante modelos de múltiples variables: performance.\nperformance nos ofrece la posibilidad de chequear dos diagnósticos adicionales:\n\nLa predicción del modelo (basándose en una aproximación Bayesiana)\nLa colinearidad\n\nTambién se lo puede utilizar para modelos univariables (como la regresión lineal).\n\n\n\n\n\nlibrary(performance)\ncheck_model(lm2)"
+  },
+  {
+    "objectID": "index.html#diagnósticos-de-la-regresión-múltiple-1",
+    "href": "index.html#diagnósticos-de-la-regresión-múltiple-1",
+    "title": "Estadística aplicada con R",
+    "section": "Diagnósticos de la regresión múltiple",
+    "text": "Diagnósticos de la regresión múltiple"
+  },
+  {
+    "objectID": "index.html#pasos-a-seguir",
+    "href": "index.html#pasos-a-seguir",
+    "title": "Estadística aplicada con R",
+    "section": "Pasos a seguir",
+    "text": "Pasos a seguir\n\n\nA diferencia de análisis univariables, no existe verdaderamente una ruta específica a seguir al lidiar con datos multivaridos.\nAl tratar con variables continuas como predictores, el llegar a un modelo congruente y robusto se convierte en lo que algunos estadísticos llaman el “arte de modelar”.\nEn este sentido, con nuestro ejemplo, al menos de los diagnósticos tenemos dos problemas para comenzar:\n\nNo normalidad de los residuos y heterodasticidad\n\nComo quizá te hayas dado cuenta de ejemplos anteriores en el ANOVA, el transformar los datos a veces resuelve ambos supuestos: normalidad y homocedasticidad.\nDe haber encontrado multicolinearidad, podríamos haber lidiado con ella mediante tenemos dos opciones:\n\nVolver a nuestra matriz de correlación y fijarnos en los grupos de variables marcadas como altamente correlacionadas y buscar la manera de remover tantas fuesen necesarias, dejando al menos una de cada grupo como predictor en una siguiente version del modelo.\nLlevar a cabo un método de selección automática de variables. Sin embargo, esta vía no garantiza el deshacernos de variables correlacionadas. Esto último en virtud que estos métodos se basan en métricas que no toman en cuenta ese aspecto."
+  },
+  {
+    "objectID": "index.html#transformaciones",
+    "href": "index.html#transformaciones",
+    "title": "Estadística aplicada con R",
+    "section": "Transformaciones",
+    "text": "Transformaciones\n\n\nDel gráfico de la predicción posterior evidenciamos que los datos observados de incidencia de rotavirus son asimétricos hacia la izquierda (o asimetría positiva).\nUsualmente la transformación que mejor funciona en este caso es el logaritmo natural (de hecho el resto de datos que hemos usado en el curso coincidentalmente han presentado el mismo tipo de asimetría).\n\n\n\n\nlm3 &lt;- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin)\ncheck_model(lm3)"
+  },
+  {
+    "objectID": "index.html#transformaciones-1",
+    "href": "index.html#transformaciones-1",
+    "title": "Estadística aplicada con R",
+    "section": "Transformaciones",
+    "text": "Transformaciones"
+  },
+  {
+    "objectID": "index.html#transform",
+    "href": "index.html#transform",
+    "title": "Estadística aplicada con R",
+    "section": "Transform",
+    "text": "Transform"
+  },
+  {
+    "objectID": "index.html#multicolinearidad",
+    "href": "index.html#multicolinearidad",
+    "title": "Estadística aplicada con R",
+    "section": "Multicolinearidad",
+    "text": "Multicolinearidad\n\n\nDe acuerdo a la selección automática, nuestro modelo sería hasta el momento:\n\n\ncases ~ FM + PM + TMK + TXK + UPM\n\n\n\nNingún método de selección de variables automático es perfecto.\nEn este caso, aunque obvio, sabemos que las variables TMK y TXK deben estar correlacionadas al ser medidas de temperatura correspondientes al mismo día.\nBien podríamos deshechar una de las dos, pero cuando no sabemos la naturaleza de las variables, es mejor llevar a cabo un análisis de correlación antes de checar el modelo por sus supuestos.\nEn el módulo de AED ya hicimos una primera aproximación con las matrices de dispersión. Sin embargo, en ellas solo vimos el coeficiente de correlación junto al código de significancia.\nPara estar seguros de que eliminaremos variables correctamente, es mejor dar un vistazo a las matrices de correlación directamente."
+  },
+  {
+    "objectID": "index.html#multicolinearidad-1",
+    "href": "index.html#multicolinearidad-1",
+    "title": "Estadística aplicada con R",
+    "section": "Multicolinearidad",
+    "text": "Multicolinearidad"
+  },
+  {
+    "objectID": "index.html#selección-de-modelos",
+    "href": "index.html#selección-de-modelos",
+    "title": "Estadística aplicada con R",
+    "section": "Selección de modelos",
+    "text": "Selección de modelos"
+  },
+  {
+    "objectID": "index.html#selección-de-modelos-1",
+    "href": "index.html#selección-de-modelos-1",
+    "title": "Estadística aplicada con R",
+    "section": "Selección de modelos",
+    "text": "Selección de modelos"
+  },
+  {
+    "objectID": "index.html#selección-de-modelos-2",
+    "href": "index.html#selección-de-modelos-2",
+    "title": "Estadística aplicada con R",
+    "section": "Selección de modelos",
+    "text": "Selección de modelos"
+  },
+  {
+    "objectID": "index.html#datos-que-usaremos",
+    "href": "index.html#datos-que-usaremos",
+    "title": "Estadística aplicada con R",
+    "section": "Datos que usaremos",
+    "text": "Datos que usaremos\n\n\nUsaremos los datos de rotavirus en Berlin del archivo de Excel “rotXLS.xlsx” que contiene información sobre el conteo de casos de rotavirus en Berlín desde el año 2001 hasta el 2020.\nSupongámos que queremos modelar la variable cases en función de todas las variables metereológicas a nuestra disposición. Para esto, recordemos la descripción de esta tabla de datos\n\n\n\n\n\ndate: fecha de cierre de la toma de datos\ncases: número de casos de rotavirus en la semana\nweek: semana epidemiológica\nincidence: número de casos/100000 habitantes\nFM: media diaria de velocidad del viento (m/s)\nRSK: media diaria de lluvia (mm)\n\n\n\nSHK_TAG: media diaria de nieve (cm)\nPM: media diaria de presión atmosférica (hPa)\nTMK: media diaria de temperatura (°C)\nTXK: media diaria de temperatura máxima (°C)\nTNK: media diaria de temperatura mínima (°C)\nUPM: media diaria de humedad relativa (%)\n\n\n\n\n\nSin embargo, antes de continuar, debemos hacer un preprocesamiento de datos ya que en la estructura original de estos se considera un efecto temporal dado por los años. Para simplificarlo, agruparemos los datos por meses y semanas epidemiológicas."
+  },
+  {
+    "objectID": "index.html#preprocesamiento-de-datos",
+    "href": "index.html#preprocesamiento-de-datos",
+    "title": "Estadística aplicada con R",
+    "section": "Preprocesamiento de datos",
+    "text": "Preprocesamiento de datos\n\n\nAsegúrate de tener instaladas las librerías dplyr y lubridate antes de correr este código\n\n\nlibrary(dplyr)\nlibrary(readxl)\nlibrary(lubridate)\nrot_berlin &lt;- read_excel(\"rotXLS.xlsx\")\nrot_berlin$month &lt;- month(rot_berlin$date)\nrot_berlin &lt;- rot_berlin %&gt;%\n  group_by(month, week) %&gt;%\n  summarise(incidence = mean(incidence),\n            cases = round(mean(cases),0),\n            FM = mean(FM),\n            RSK = mean(RSK),\n            SHK_TAG = mean(SHK_TAG),\n            PM = mean(PM),\n            TMK = mean(TMK),\n            TXK = mean(TXK),\n            TNK = mean(TNK),\n            UPM = mean(UPM))"
+  },
+  {
+    "objectID": "index.html#datos-que-usaremos-1",
+    "href": "index.html#datos-que-usaremos-1",
+    "title": "Estadística aplicada con R",
+    "section": "Datos que usaremos",
+    "text": "Datos que usaremos\n\n\nLos datos que usaremos corresponden a la carpita rinconera (Rhinichthys cataractae) recolectados durante el Censo de corrientes biológicas de Maryland.\nLa descripción de los datos es la siguiente:\n\n\n\n\n\nStream: nombre de la corriente de agua\nlongnose: número de carpitas/75 metros de corriente\nacerage: área (acres) drenada por la corriente\nDO2: oxígeno disuelto (mg/L)\n\n\n\nmaxdepth: profundidad máxima (cm)\nNO3: concentración de nitrato (mg/L)\nSO4: concentración de sulfato (mg/L)\ntemp: temperatura del agua\n\n\n\n\nLos datos se encuentran en la siguiente diapositiva. Cópialos, pégalos en tu sesión de R y corre el código para cargar la tabla."
+  },
+  {
+    "objectID": "index.html#preprocesamiento-de-los-datos",
+    "href": "index.html#preprocesamiento-de-los-datos",
+    "title": "Estadística aplicada con R",
+    "section": "Preprocesamiento de los datos",
+    "text": "Preprocesamiento de los datos\n\nInput = (\"\nStream                   longnose  acerage  DO2   maxdepth  NO3   SO4     temp\nBASIN_RUN                  13         2528    9.6  80        2.28  16.75   15.3\nBEAR_BR                    12         3333    8.5  83        5.34   7.74   19.4\nBEAR_CR                    54        19611    8.3  96        0.99  10.92   19.5\nBEAVER_DAM_CR              19         3570    9.2  56        5.44  16.53   17\nBEAVER_RUN                 37         1722    8.1  43        5.66   5.91   19.3\nBENNETT_CR                  2          583    9.2  51        2.26   8.81   12.9\nBIG_BR                     72         4790    9.4  91        4.1    5.65   16.7\nBIG_ELK_CR                164        35971   10.2  81        3.2   17.53   13.8\nBIG_PIPE_CR                18        25440    7.5  120       3.53   8.2    13.7\nBLUE_LICK_RUN               1         2217    8.5  46        1.2   10.85   14.3\nBROAD_RUN                  53         1971   11.9  56        3.25  11.12   22.2\nBUFFALO_RUN                16        12620    8.3  37        0.61  18.87   16.8\nBUSH_CR                    32        19046    8.3  120       2.93  11.31   18\nCABIN_JOHN_CR              21         8612    8.2  103       1.57  16.09   15\nCARROLL_BR                 23         3896   10.4  105       2.77  12.79   18.4\nCOLLIER_RUN                18         6298    8.6  42        0.26  17.63   18.2\nCONOWINGO_CR              112        27350    8.5  65        6.95  14.94   24.1\nDEAD_RUN                   25         4145    8.7  51        0.34  44.93   23\nDEEP_RUN                    5         1175    7.7  57        1.3   21.68   21.8\nDEER_CR                    26         8297    9.9  60        5.26  6.36    19.1\nDORSEY_RUN                  8         7814    6.8  160       0.44  20.24   22.6\nFALLS_RUN                  15         1745    9.4  48        2.19  10.27   14.3\nFISHING_CR                 11         5046    7.6  109       0.73   7.1    19\nFLINTSTONE_CR              11        18943    9.2  50        0.25  14.21   18.5\nGREAT_SENECA_CR            87         8624    8.6  78        3.37   7.51   21.3\nGREENE_BR                  33         2225    9.1  41        2.3    9.72   20.5\nGUNPOWDER_FALLS            22        12659    9.7  65        3.3    5.98   18\nHAINES_BR                  98         1967    8.6  50        7.71  26.44   16.8\nHAWLINGS_R                  1         1172    8.3  73        2.62   4.64   20.5\nHAY_MEADOW_BR               5          639    9.5  26        3.53   4.46   20.1\nHERRINGTON_RUN              1         7056    6.4  60        0.25   9.82   24.5\nHOLLANDS_BR                38         1934   10.5  85        2.34  11.44   12\nISRAEL_CR                  30         6260    9.5  133       2.41  13.77   21\nLIBERTY_RES                12          424    8.3  62        3.49   5.82   20.2\nLITTLE_ANTIETAM_CR         24         3488    9.3  44        2.11  13.37   24\nLITTLE_BEAR_CR              6         3330    9.1  67        0.81   8.16   14.9\nLITTLE_CONOCOCHEAGUE_CR    15         2227    6.8  54        0.33   7.6    24\nLITTLE_DEER_CR             38         8115    9.6  110       3.4    9.22   20.5\nLITTLE_FALLS               84         1600   10.2  56        3.54   5.69   19.5\nLITTLE_GUNPOWDER_R          3        15305    9.7  85        2.6    6.96   17.5\nLITTLE_HUNTING_CR          18         7121    9.5  58        0.51   7.41   16\nLITTLE_PAINT_BR            63         5794    9.4  34        1.19  12.27   17.5\nMAINSTEM_PATUXENT_R       239         8636    8.4  150       3.31   5.95   18.1\nMEADOW_BR                 234         4803    8.5  93        5.01  10.98   24.3\nMILL_CR                     6         1097    8.3  53        1.71  15.77   13.1\nMORGAN_RUN                 76         9765    9.3  130       4.38   5.74   16.9\nMUDDY_BR                   25         4266    8.9  68        2.05  12.77   17\nMUDLICK_RUN                 8         1507    7.4  51        0.84  16.3    21\nNORTH_BR                   23         3836    8.3  121       1.32   7.36   18.5\nNORTH_BR_CASSELMAN_R       16        17419    7.4  48        0.29   2.5    18\nNORTHWEST_BR                6         8735    8.2  63        1.56  13.22   20.8\nNORTHWEST_BR_ANACOSTIA_R  100        22550    8.4  107       1.41  14.45   23\nOWENS_CR                   80         9961    8.6  79        1.02   9.07   21.8\nPATAPSCO_R                 28         4706    8.9  61        4.06   9.9    19.7\nPINEY_BR                   48         4011    8.3  52        4.7    5.38   18.9\nPINEY_CR                   18         6949    9.3  100       4.57  17.84   18.6\nPINEY_RUN                  36        11405    9.2  70        2.17  10.17   23.6\nPRETTYBOY_BR               19          904    9.8  39        6.81   9.2    19.2\nRED_RUN                    32         3332    8.4  73        2.09   5.5    17.7\nROCK_CR                     3          575    6.8  33        2.47   7.61   18\nSAVAGE_R                  106        29708    7.7  73        0.63  12.28   21.4\nSECOND_MINE_BR             62         2511   10.2  60        4.17  10.75   17.7\nSENECA_CR                  23        18422    9.9  45        1.58   8.37   20.1\nSOUTH_BR_CASSELMAN_R        2         6311    7.6  46        0.64  21.16   18.5\nSOUTH_BR_PATAPSCO          26         1450    7.9  60        2.96   8.84   18.6\nSOUTH_FORK_LINGANORE_CR    20         4106   10.0  96        2.62   5.45   15.4\nTUSCARORA_CR               38        10274    9.3  90        5.45  24.76   15\nWATTS_BR                   19          510    6.7  82        5.25  14.19   26.5\n\")\n\ncarpita = read.table(textConnection(Input),header=TRUE)"
+  },
+  {
+    "objectID": "index.html#datos-que-usaremos-2",
+    "href": "index.html#datos-que-usaremos-2",
+    "title": "Estadística aplicada con R",
+    "section": "Datos que usaremos",
+    "text": "Datos que usaremos\n\nInput = (\"\nStream                   longnose  acerage  DO2   maxdepth  NO3   SO4     temp\nBASIN_RUN                  13         2528    9.6  80        2.28  16.75   15.3\nBEAR_BR                    12         3333    8.5  83        5.34   7.74   19.4\nBEAR_CR                    54        19611    8.3  96        0.99  10.92   19.5\nBEAVER_DAM_CR              19         3570    9.2  56        5.44  16.53   17\nBEAVER_RUN                 37         1722    8.1  43        5.66   5.91   19.3\nBENNETT_CR                  2          583    9.2  51        2.26   8.81   12.9\nBIG_BR                     72         4790    9.4  91        4.1    5.65   16.7\nBIG_ELK_CR                164        35971   10.2  81        3.2   17.53   13.8\nBIG_PIPE_CR                18        25440    7.5  120       3.53   8.2    13.7\nBLUE_LICK_RUN               1         2217    8.5  46        1.2   10.85   14.3\nBROAD_RUN                  53         1971   11.9  56        3.25  11.12   22.2\nBUFFALO_RUN                16        12620    8.3  37        0.61  18.87   16.8\nBUSH_CR                    32        19046    8.3  120       2.93  11.31   18\nCABIN_JOHN_CR              21         8612    8.2  103       1.57  16.09   15\nCARROLL_BR                 23         3896   10.4  105       2.77  12.79   18.4\nCOLLIER_RUN                18         6298    8.6  42        0.26  17.63   18.2\nCONOWINGO_CR              112        27350    8.5  65        6.95  14.94   24.1\nDEAD_RUN                   25         4145    8.7  51        0.34  44.93   23\nDEEP_RUN                    5         1175    7.7  57        1.3   21.68   21.8\nDEER_CR                    26         8297    9.9  60        5.26  6.36    19.1\nDORSEY_RUN                  8         7814    6.8  160       0.44  20.24   22.6\nFALLS_RUN                  15         1745    9.4  48        2.19  10.27   14.3\nFISHING_CR                 11         5046    7.6  109       0.73   7.1    19\nFLINTSTONE_CR              11        18943    9.2  50        0.25  14.21   18.5\nGREAT_SENECA_CR            87         8624    8.6  78        3.37   7.51   21.3\nGREENE_BR                  33         2225    9.1  41        2.3    9.72   20.5\nGUNPOWDER_FALLS            22        12659    9.7  65        3.3    5.98   18\nHAINES_BR                  98         1967    8.6  50        7.71  26.44   16.8\nHAWLINGS_R                  1         1172    8.3  73        2.62   4.64   20.5\nHAY_MEADOW_BR               5          639    9.5  26        3.53   4.46   20.1\nHERRINGTON_RUN              1         7056    6.4  60        0.25   9.82   24.5\nHOLLANDS_BR                38         1934   10.5  85        2.34  11.44   12\nISRAEL_CR                  30         6260    9.5  133       2.41  13.77   21\nLIBERTY_RES                12          424    8.3  62        3.49   5.82   20.2\nLITTLE_ANTIETAM_CR         24         3488    9.3  44        2.11  13.37   24\nLITTLE_BEAR_CR              6         3330    9.1  67        0.81   8.16   14.9\nLITTLE_CONOCOCHEAGUE_CR    15         2227    6.8  54        0.33   7.6    24\nLITTLE_DEER_CR             38         8115    9.6  110       3.4    9.22   20.5\nLITTLE_FALLS               84         1600   10.2  56        3.54   5.69   19.5\nLITTLE_GUNPOWDER_R          3        15305    9.7  85        2.6    6.96   17.5\nLITTLE_HUNTING_CR          18         7121    9.5  58        0.51   7.41   16\nLITTLE_PAINT_BR            63         5794    9.4  34        1.19  12.27   17.5\nMAINSTEM_PATUXENT_R       239         8636    8.4  150       3.31   5.95   18.1\nMEADOW_BR                 234         4803    8.5  93        5.01  10.98   24.3\nMILL_CR                     6         1097    8.3  53        1.71  15.77   13.1\nMORGAN_RUN                 76         9765    9.3  130       4.38   5.74   16.9\nMUDDY_BR                   25         4266    8.9  68        2.05  12.77   17\nMUDLICK_RUN                 8         1507    7.4  51        0.84  16.3    21\nNORTH_BR                   23         3836    8.3  121       1.32   7.36   18.5\nNORTH_BR_CASSELMAN_R       16        17419    7.4  48        0.29   2.5    18\nNORTHWEST_BR                6         8735    8.2  63        1.56  13.22   20.8\nNORTHWEST_BR_ANACOSTIA_R  100        22550    8.4  107       1.41  14.45   23\nOWENS_CR                   80         9961    8.6  79        1.02   9.07   21.8\nPATAPSCO_R                 28         4706    8.9  61        4.06   9.9    19.7\nPINEY_BR                   48         4011    8.3  52        4.7    5.38   18.9\nPINEY_CR                   18         6949    9.3  100       4.57  17.84   18.6\nPINEY_RUN                  36        11405    9.2  70        2.17  10.17   23.6\nPRETTYBOY_BR               19          904    9.8  39        6.81   9.2    19.2\nRED_RUN                    32         3332    8.4  73        2.09   5.5    17.7\nROCK_CR                     3          575    6.8  33        2.47   7.61   18\nSAVAGE_R                  106        29708    7.7  73        0.63  12.28   21.4\nSECOND_MINE_BR             62         2511   10.2  60        4.17  10.75   17.7\nSENECA_CR                  23        18422    9.9  45        1.58   8.37   20.1\nSOUTH_BR_CASSELMAN_R        2         6311    7.6  46        0.64  21.16   18.5\nSOUTH_BR_PATAPSCO          26         1450    7.9  60        2.96   8.84   18.6\nSOUTH_FORK_LINGANORE_CR    20         4106   10.0  96        2.62   5.45   15.4\nTUSCARORA_CR               38        10274    9.3  90        5.45  24.76   15\nWATTS_BR                   19          510    6.7  82        5.25  14.19   26.5\n\")\n\ncarpitas = read.table(textConnection(Input),header=TRUE)"
+  },
+  {
+    "objectID": "index.html#regresión-lineal-múltiple-en-r",
+    "href": "index.html#regresión-lineal-múltiple-en-r",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión lineal múltiple en R",
+    "text": "Regresión lineal múltiple en R\n\n\nAhora si podemos comenzar realizando un modelo usando todas las variables continuas de la tabla de datos\n\n\nmult_lm1 &lt;- lm(longnose ~ acerage + DO2 + maxdepth + NO3 + SO4 + temp, data = carpitas)\n\n\n\nPero, antes de ver los resultados, comenzaremos por ver los diagnósticos del modelo.\nPodemos llevar a cabo el chequeo usando los diagnósticos base de R.\nSin embargo, vamos a introducir otra librería muy útil cuando nos encontramos ante modelos de múltiples variables: performance.\nperformance nos ofrece la posibilidad de chequear dos diagnósticos adicionales:\n\nLa predicción del modelo (basándose en una aproximación Bayesiana)\nLa colinearidad\n\nTambién se lo puede utilizar para modelos univariables (como la regresión lineal).\n\n\n\n\n\nlibrary(performance)\ncheck_model(mult_lm1)"
+  },
+  {
+    "objectID": "index.html#regresión-lineal-múltiple-en-r-1",
+    "href": "index.html#regresión-lineal-múltiple-en-r-1",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión lineal múltiple en R",
+    "text": "Regresión lineal múltiple en R\n\n\nAntes de ver los resultados, comenzaremos por ver los diagnósticos del modelo.\nPodemos llevar a cabo el chequeo usando los diagnósticos base de R.\nSin embargo, vamos a introducir otra librería muy útil cuando nos encontramos ante modelos de múltiples variables: performance.\nperformance nos ofrece la posibilidad de chequear dos diagnósticos adicionales:\n\nLa predicción del modelo (basándose en una aproximación Bayesiana)\nLa colinearidad\n\nTambién se lo puede utilizar para modelos univariables (como la regresión lineal).\n\n\n\n\nlibrary(performance)\ncheck_model(mult_lm1)"
+  },
+  {
+    "objectID": "index.html#datos-que-usaremos-3",
+    "href": "index.html#datos-que-usaremos-3",
+    "title": "Estadística aplicada con R",
+    "section": "Datos que usaremos",
+    "text": "Datos que usaremos\n\n\nSupongamos que estamos interesados en saber las características físico-químicas de las corrientes de agua para predecir el número de carpitas que encontraríamos en corrientes similares donde no se las ha contado, pero se tiene información de estas características.\nAdemás, podríamos elucidar que condiciones del agua son las que más afectan el número de carpitas.\nEstas dos preguntas, son un claro ejemplo de en los casos que podríamos llevar a cabo una regresión lineal múltiple.\nPero antes de comenzar, es siempre bueno el llevar a cabo un simple análisis de correlación para evitar de entrada la multicolinearidad.\nEn el módulo de AED introducimos la función ggpairs de la librería GGally que ya nos brinda una idea de la multicolinearidad. Sin embargo, esta función nos presenta tan solo los coeficientes de correlación acompañados de los códigos de significancia de los valores p de los mismos.\nAquí voy a introducir una manera más exhaustiva de checar de mejor manera multicolinearidad antes de correr el modelo reduciendo el peligro de remover variables que podrían ser útiles."
+  },
+  {
+    "objectID": "index.html#matriz-de-correlación",
+    "href": "index.html#matriz-de-correlación",
+    "title": "Estadística aplicada con R",
+    "section": "Matriz de correlación",
+    "text": "Matriz de correlación\n\n\nPara realizar un matriz de correlación en R, basta el seleccionar las columnas de la tabla de datos sobre las cuales queremos el análisis\n\n\n\n\nmatriz &lt;- cor(carpitas[,c(2:8)])\nmatriz\n\n            longnose      acerage         DO2     maxdepth          NO3\nlongnose  1.00000000  0.346506086  0.13615707  0.304979845  0.309232677\nacerage   0.34650609  1.000000000 -0.02243326  0.258624140 -0.099527887\nDO2       0.13615707 -0.022433261  1.00000000 -0.057570044  0.273426337\nmaxdepth  0.30497984  0.258624140 -0.05757004  1.000000000  0.036268615\nNO3       0.30923268 -0.099527887  0.27342634  0.036268615  1.000000000\nSO4      -0.01737951  0.048776389 -0.07241127 -0.049871660 -0.087130116\ntemp      0.13986535  0.003541386 -0.31886489 -0.004895135 -0.001596462\n                 SO4         temp\nlongnose -0.01737951  0.139865351\nacerage   0.04877639  0.003541386\nDO2      -0.07241127 -0.318864885\nmaxdepth -0.04987166 -0.004895135\nNO3      -0.08713012 -0.001596462\nSO4       1.00000000  0.079791845\ntemp      0.07979184  1.000000000\n\n\n\n\n\nSin embargo, puede que no encontremos muy cómodo el ver las correlaciones de este modo. Podemos ayudarnos nuevamente de la librería corrplot\n\n\nlibrary(corrplot)\ncorrplot(matriz)\n\n\n\n\n\n\n\nPero, de ¿qué manera sabemos que correlaciones son importantes?. Para estos nos ayudaremos calculando los valores p con la librería Hmisc\n\n\n\n\nlibrary(Hmisc)\np.matriz &lt;- rcorr(as.matrix(carpitas[,c(2:8)]))$P\np.matriz\n\n            longnose     acerage         DO2   maxdepth        NO3       SO4\nlongnose          NA 0.003795898 0.268238084 0.01144331 0.01028945 0.8881317\nacerage  0.003795898          NA 0.855910348 0.03321252 0.41936715 0.6928439\nDO2      0.268238084 0.855910348          NA 0.64098623 0.02406381 0.5573250\nmaxdepth 0.011443313 0.033212523 0.640986233         NA 0.76904034 0.6863016\nNO3      0.010289455 0.419367148 0.024063813 0.76904034         NA 0.4798661\nSO4      0.888131717 0.692843949 0.557325047 0.68630157 0.47986610        NA\ntemp     0.255296594 0.977134418 0.008043335 0.96839755 0.98969107 0.5177523\n                temp\nlongnose 0.255296594\nacerage  0.977134418\nDO2      0.008043335\nmaxdepth 0.968397553\nNO3      0.989691065\nSO4      0.517752280\ntemp              NA\n\n\n\n\n\nSi en la tabla de los valores p calculados por Hmisc no encontramos valores extremos (menores a 0.0001), no hay razón para remover variables altamente correlacionadas."
+  },
+  {
+    "objectID": "index.html#selección-de-variables",
+    "href": "index.html#selección-de-variables",
+    "title": "Estadística aplicada con R",
+    "section": "Selección de variables",
+    "text": "Selección de variables\n\n\nLa selección automática de variables funciona con un algoritmo relativamente sencillo:\n\nRetira una variable a la vez del modelo, calcula un criterio de comparación y repite el proceso\nUsa ese criterio de comparación con respecto a un modelo nulo (sin ningún predictor) y devuelve el modelo que haya obtenido la mejor valoración.\n\nEl criterio de evaluación más usado para comparar modelos es el denominado criterio de información de Akaike (AIC), y es un estimador del error de predicción. Mientras menos sea el valor de AIC, mejores las predicciones que un modelo teoricamente será capaz de realizar.\nRealizamos la selección de variables antes de cualquier diagnóstico o transformación ya que a veces estas últimas “exageran” la importancia de las variables en el caso de hacer la selección después.\nLa manera más sencilla de hacer una selección de variables es usando la función base de R step\n\n\n\n\nstep(lm1)"
+  },
+  {
+    "objectID": "index.html#selección-de-variables-1",
+    "href": "index.html#selección-de-variables-1",
+    "title": "Estadística aplicada con R",
+    "section": "Selección de variables",
+    "text": "Selección de variables\n\nstep(lm1)\n\nStart:  AIC=372.26\ncases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + TNK + UPM\n\n          Df Sum of Sq   RSS    AIC\n- TNK      1       2.8 15135 370.27\n- RSK      1      18.7 15151 370.34\n- SHK_TAG  1      42.4 15175 370.44\n&lt;none&gt;                 15132 372.26\n- FM       1     658.0 15790 373.03\n- TMK      1     830.7 15963 373.74\n- PM       1     887.1 16019 373.97\n- TXK      1    1259.3 16392 375.46\n- UPM      1    3660.8 18793 384.35\n\nStep:  AIC=370.27\ncases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + UPM\n\n          Df Sum of Sq   RSS    AIC\n- RSK      1      17.7 15153 368.35\n- SHK_TAG  1      60.8 15196 368.53\n&lt;none&gt;                 15135 370.27\n- FM       1     697.7 15833 371.20\n- PM       1     889.7 16025 371.99\n- TXK      1    1888.5 17024 375.92\n- TMK      1    4107.8 19243 383.88\n- UPM      1    5612.2 20747 388.78\n\nStep:  AIC=368.35\ncases ~ FM + SHK_TAG + PM + TMK + TXK + UPM\n\n          Df Sum of Sq   RSS    AIC\n- SHK_TAG  1      57.9 15211 366.60\n&lt;none&gt;                 15153 368.35\n- FM       1     683.9 15837 369.22\n- PM       1     926.0 16079 370.21\n- TXK      1    2063.6 17216 374.65\n- TMK      1    4347.8 19501 382.75\n- UPM      1    5962.0 21115 387.92\n\nStep:  AIC=366.6\ncases ~ FM + PM + TMK + TXK + UPM\n\n       Df Sum of Sq   RSS    AIC\n&lt;none&gt;              15211 366.60\n- FM    1     698.0 15909 367.51\n- PM    1    1160.5 16371 369.38\n- TXK   1    2076.5 17287 372.92\n- TMK   1    4423.5 19634 381.19\n- UPM   1    5958.9 21169 386.09\n\n\n\nCall:\nlm(formula = cases ~ FM + PM + TMK + TXK + UPM, data = rot_berlin)\n\nCoefficients:\n(Intercept)           FM           PM          TMK          TXK          UPM  \n   2503.898       -7.526       -2.219      -19.360       12.304       -2.425"
+  },
+  {
+    "objectID": "index.html#selección-de-variables-2",
+    "href": "index.html#selección-de-variables-2",
+    "title": "Estadística aplicada con R",
+    "section": "Selección de variables",
+    "text": "Selección de variables\n\n\nAsí, de acuerdo a la selección de variables, podemos prescindir de SO4.\n\n\n\n\nmult_lm3 &lt;- lm(log(longnose) ~ acerage + DO2 + maxdepth + NO3 + temp, data = carpitas)\ncheck_model(mult_lm3)"
+  },
+  {
+    "objectID": "index.html#chucha",
+    "href": "index.html#chucha",
+    "title": "Estadística aplicada con R",
+    "section": "chucha",
+    "text": "chucha"
+  },
+  {
+    "objectID": "index.html#interpretación",
+    "href": "index.html#interpretación",
+    "title": "Estadística aplicada con R",
+    "section": "Interpretación",
+    "text": "Interpretación\n\n\n\n\nCall:\nlm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1.72811 -0.24433  0.01716  0.28480  0.83067 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 13.856579   0.807307   17.16   &lt;2e-16 ***\nTXK         -0.146015   0.010136  -14.40   &lt;2e-16 ***\nUPM         -0.112138   0.009152  -12.25   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.4707 on 62 degrees of freedom\nMultiple R-squared:  0.7778,    Adjusted R-squared:  0.7706 \nF-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16\n\n\n\n\n\nHaremos uso nuevamente de la librería ggeffects para lidiar con la retransformación y ggplot2 junto a patchwork para graficar las predicciones.\n\n\nlibrary(ggeffects)\nlibrary(ggplot2)\nlibrary(patchwork)\npredicciones &lt;- ggpredict(lm3)\npredicciones[[1]]\n\n# Predicted values of cases\n\nTXK | Predicted |           95% CI\n----------------------------------\n  0 |    210.45 | [152.49, 290.31]\n  5 |    100.89 | [ 80.04, 127.12]\n 10 |     48.10 | [ 41.22,  56.10]\n 15 |     22.66 | [ 20.05,  25.59]\n 20 |     10.40 | [  8.73,  12.36]\n 25 |      4.49 | [  3.33,   5.97]\n 30 |      1.65 | [  0.90,   2.69]\n\nAdjusted for:\n* UPM = 75.82\n\n\n\n\n\npredicciones[[2]]\n\n# Predicted values of cases\n\nUPM | Predicted |           95% CI\n----------------------------------\n 55 |    253.38 | [169.78, 377.88]\n 60 |    144.20 | [105.27, 197.39]\n 65 |     81.88 | [ 64.86, 103.30]\n 70 |     46.31 | [ 39.40,  54.41]\n 75 |     26.01 | [ 23.01,  29.38]\n 80 |     14.42 | [ 12.41,  16.72]\n 85 |      7.80 | [  6.17,   9.80]\n 95 |      1.87 | [  0.98,   3.15]\n\nAdjusted for:\n* TXK = 14.73\n\n\n\n\n\np1 &lt;- predicciones[[1]]\np2 &lt;- predicciones[[2]]\nplot(p1) + plot(p2)"
+  },
+  {
+    "objectID": "index.html#pasos-para-una-regresión-múltiple",
+    "href": "index.html#pasos-para-una-regresión-múltiple",
+    "title": "Estadística aplicada con R",
+    "section": "Pasos para una regresión múltiple",
+    "text": "Pasos para una regresión múltiple\n\n\nA diferencia de la regresión lineal simple, no existe un proceso estructurado de pasos a seguir en el caso de su extensión a dos o más variables continuas como predictores.\nEl llegar a un modelo apropiado se convierte en lo que algunos estadísticos llaman el “arte de modelar”.\nEn las siguientes diapositivas voy a presentar la manera en que usualmente hago este tipo de modelos y que resumiré en:\n\nEmpezar por lo que se le conoce como un modelo completo (incluyendo todas las variables continuas disponibles).\nRealizar una selección automática de variables sobre el modelo del paso 1.\nChecar manualmente por colinearidad entre las variables del modelo resultante del paso 2.\nRevisar si las variables incluidas tienen sentido (biológico),\nChecar los supuestos de normalidad y homocedasticidad.\nRealizar transformaciones de ser necesario.\nInterpretar resultados.\n\nEstos pasos no representan una línea recta. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis dependerán más de su buen entendimiento de los datos y los fenómenos que deseen explicar."
+  },
+  {
+    "objectID": "index.html#modelo-completo",
+    "href": "index.html#modelo-completo",
+    "title": "Estadística aplicada con R",
+    "section": "Modelo completo",
+    "text": "Modelo completo\n\n\nEmpezaremos formulando un modelo completo para estos datos de la siguiente manera:\n\n\nlm1 &lt;- lm(cases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + TNK + UPM, data = rot_berlin)\n\n\n\nEn la función lm se pueden incluir términos de órdenes superiores (interacciones, cuadrados, cubos, etc) con variables continuas.\nPor simplicidad, únicamente consideraremos predictores de primer orden.\nAdemás que para modelos no lineales es mejor usar funciones adecuadas (lm estima los parámetros usando el algoritmo de máxima probabilidad y puede simplemente no servir)."
+  },
+  {
+    "objectID": "index.html#matrices-de-correlación",
+    "href": "index.html#matrices-de-correlación",
+    "title": "Estadística aplicada con R",
+    "section": "Matrices de correlación",
+    "text": "Matrices de correlación\n\n\nPara calcular la matriz de correlación de un conjunto de datos usaremos la librería Hmisc\n\n\n\n\nlibrary(Hmisc)\nmatriz &lt;- rcorr(as.matrix(rot_berlin[,c(5, 8, 9, 10, 12)]))\nmatriz\n\n       FM    PM   TMK   TXK   UPM\nFM   1.00 -0.38 -0.67 -0.66  0.22\nPM  -0.38  1.00  0.14  0.14 -0.02\nTMK -0.67  0.14  1.00  1.00 -0.65\nTXK -0.66  0.14  1.00  1.00 -0.70\nUPM  0.22 -0.02 -0.65 -0.70  1.00\n\nn= 65 \n\n\nP\n    FM     PM     TMK    TXK    UPM   \nFM         0.0019 0.0000 0.0000 0.0824\nPM  0.0019        0.2768 0.2771 0.8562\nTMK 0.0000 0.2768        0.0000 0.0000\nTXK 0.0000 0.2771 0.0000        0.0000\nUPM 0.0824 0.8562 0.0000 0.0000       \n\n\n\n\n\nEn este paso, recomiendo el mirar por fuera de la diagonal y eliminar del análisis una variable de cualquier par que tenga un coeficiente de correlación exactamente igual a 1. En este caso, eliminaré TMK"
+  },
+  {
+    "objectID": "index.html#diagnósticos-de-la-regresión-múltiple-2",
+    "href": "index.html#diagnósticos-de-la-regresión-múltiple-2",
+    "title": "Estadística aplicada con R",
+    "section": "Diagnósticos de la regresión múltiple",
+    "text": "Diagnósticos de la regresión múltiple\n\n\n\n\n\n\n\n\nChequeo de la predicción posterior\nEste gráfico contrapone la densidad de la distribución de la variable de respuesta con las densidades de las predicciones obtenidas del modelo mediante un proceso de sampleo Bayesiano (por eso apreciamos varias líneas azules). Nos da una idea de qué tan adecuado es nuestro modelo para predecir los valores observados. Idealmente estas dos deberían superponerse."
+  },
+  {
+    "objectID": "index.html#diagnósticos-de-la-regresión-múltiple-3",
+    "href": "index.html#diagnósticos-de-la-regresión-múltiple-3",
+    "title": "Estadística aplicada con R",
+    "section": "Diagnósticos de la regresión múltiple",
+    "text": "Diagnósticos de la regresión múltiple\n\n\n\n\n\n\n\n\nChequeo de la colinearidad\nAquí vemos distribuidas en el eje X cada una de las variables que estamos usando como predictores mientras que en el eje Y tenemos el factor de inflación de la varianza (VIF) que cada una de estas contribuye al modelo. Nos da una idea de que variables podríamos eliminar basados en mantener únicamente variables independientes entre sí como predictores."
+  },
+  {
+    "objectID": "index.html#tiene-todo-esto-sentido",
+    "href": "index.html#tiene-todo-esto-sentido",
+    "title": "Estadística aplicada con R",
+    "section": "¿Tiene todo esto sentido?",
+    "text": "¿Tiene todo esto sentido?\n\nHasta aquí, nuestro modelo candidato sería el siguiente\n\n\n\ncases ~ FM + PM + TXK + UPM\n\n\n\nLos algoritmos usados aplican criterios estadísticos, no biológicos (o generalizando, del problema en cuestión)\nConsiderando que el rotavirus se contagia principalmente por contacto directo o indirecto con heces fecales de alguien infectado ¿tiene sentido mantener las variables FM (velocidad media diaria del viento) y PM (presión atmosférica media diaria) como parte del modelo?\nPersonalmente, pienso que no. Para mí, el modelo candidato sería el siguiente\n\n\n\n\n\nlm2 &lt;- lm(cases ~ TXK + UPM, data = rot_berlin)"
+  },
+  {
+    "objectID": "index.html#modelo-final",
+    "href": "index.html#modelo-final",
+    "title": "Estadística aplicada con R",
+    "section": "Modelo final",
+    "text": "Modelo final\n\n\nUna vez que hemos llegado a nuestro modelo, revisamos los resultads (este paso lo pudimos hacer en cada paso)\n\n\n\n\nsummary(lm3)\n\n\nCall:\nlm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1.72811 -0.24433  0.01716  0.28480  0.83067 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 13.856579   0.807307   17.16   &lt;2e-16 ***\nTXK         -0.146015   0.010136  -14.40   &lt;2e-16 ***\nUPM         -0.112138   0.009152  -12.25   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.4707 on 62 degrees of freedom\nMultiple R-squared:  0.7778,    Adjusted R-squared:  0.7706 \nF-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Estadística aplicada con R",
+    "section": "",
+    "text": "Regresión lineal múltiple\nIntroducción a modelo lineales generalizados\nAnálisis de Componentes Principales\n\n\n\n\n\n\n\nEs una extensión de la regresión lineal (simple) con la que concluimos el módulo anterior.\nEs usada para predecir una sola variable continua (y) en función de múltiples predictores continuos (un set de variables X).\nTiene prácticamente los mismos supuestos que la regresión lineal simple:\n\nLinearidad de los predictores\nHomogeneidad de la varianza (homocedasticidad)\nIndependencia de los errores (residuos)\nNormalidad de los residuos\nIndependencia de los predictores\n\nUn ejemplo de una regresión múltiple podría expresarse mediante la siguiente ecuación\n\n\n. . .\n\\[\\begin{align}\ny &= \\beta_0 + \\beta_1\\,X_1 + \\beta_2\\,X_2 \\dots \\beta_n\\,X_n\n\\end{align}\\]\n\n\n\n\n\nA diferencia de la regresión lineal simple, no existe un proceso estructurado de pasos a seguir en el caso de su extensión a dos o más variables continuas como predictores.\nEl llegar a un modelo apropiado se convierte en lo que algunos estadísticos llaman el “arte de modelar”.\nEn las siguientes diapositivas voy a presentar la manera en que usualmente hago este tipo de modelos y que resumiré en:\n\nEmpezar por lo que se le conoce como un modelo completo (incluyendo todas las variables continuas disponibles).\nRealizar una selección automática de variables sobre el modelo del paso 1.\nChecar manualmente por colinearidad entre las variables del modelo resultante del paso 2.\nRevisar si las variables incluidas tienen sentido (biológico),\nChecar los supuestos de normalidad y homocedasticidad.\nRealizar transformaciones de ser necesario.\nInterpretar resultados.\n\nEstos pasos no representan una línea recta. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis dependerán más de su buen entendimiento de los datos y los fenómenos que deseen explicar.\n\n\n\n\n\n\n\nUsaremos los datos de rotavirus en Berlin del archivo de Excel “rotXLS.xlsx” que contiene información sobre el conteo de casos de rotavirus en Berlín desde el año 2001 hasta el 2020.\nSupongámos que queremos modelar la variable cases en función de todas las variables metereológicas a nuestra disposición. Para esto, recordemos la descripción de esta tabla de datos\n\n\n\n\n\ndate: fecha de cierre de la toma de datos\ncases: número de casos de rotavirus en la semana\nweek: semana epidemiológica\nincidence: número de casos/100000 habitantes\nFM: media diaria de velocidad del viento (m/s)\nRSK: media diaria de lluvia (mm)\n\n\n\nSHK_TAG: media diaria de nieve (cm)\nPM: media diaria de presión atmosférica (hPa)\nTMK: media diaria de temperatura (°C)\nTXK: media diaria de temperatura máxima (°C)\nTNK: media diaria de temperatura mínima (°C)\nUPM: media diaria de humedad relativa (%)\n\n\n\n. . .\n\nSin embargo, antes de continuar, debemos hacer un preprocesamiento de datos ya que en la estructura original de estos se considera un efecto temporal dado por los años. Para simplificarlo, agruparemos los datos por semanas epidemiológicas.\n\n\n\n\n. . .\n\nAsegúrate de tener instalada la librería dplyr antes de correr este código\n\n\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(readxl)\n\nWarning: package 'readxl' was built under R version 4.2.3\n\nrot_berlin &lt;- read_excel(\"rotXLS.xlsx\")\nrot_berlin &lt;- rot_berlin %&gt;%\n  group_by(week) %&gt;%\n  summarise(incidence = mean(incidence),\n            cases = round(mean(cases),0),\n            FM = mean(FM),\n            RSK = mean(RSK),\n            SHK_TAG = mean(SHK_TAG),\n            PM = mean(PM),\n            TMK = mean(TMK),\n            TXK = mean(TXK),\n            TNK = mean(TNK),\n            UPM = mean(UPM))\n\n\n\n\n. . .\n\nEmpezaremos formulando un modelo completo para estos datos de la siguiente manera:\n\n\nlm1 &lt;- lm(cases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + TNK + UPM, data = rot_berlin)\n\n\n\nEn la función lm se pueden incluir términos de órdenes superiores (interacciones, cuadrados, cubos, etc) con variables continuas.\nPor simplicidad, únicamente consideraremos predictores de primer orden.\nAdemás que para modelos no lineales es mejor usar funciones adecuadas (lm estima los parámetros usando el algoritmo de máxima probabilidad y puede simplemente no servir).\n\n\n\n\n\n\n\nLa selección automática de variables funciona con un algoritmo relativamente sencillo:\n\nRetira una variable a la vez del modelo, calcula un criterio de comparación y repite el proceso\nUsa ese criterio de comparación con respecto a un modelo nulo (sin ningún predictor) y devuelve el modelo que haya obtenido la mejor valoración.\n\nEl criterio de evaluación más usado para comparar modelos es el denominado criterio de información de Akaike (AIC), y es un estimador del error de predicción. Mientras menos sea el valor de AIC, mejores las predicciones que un modelo teoricamente será capaz de realizar.\nRealizamos la selección de variables antes de cualquier diagnóstico o transformación ya que a veces estas últimas “exageran” la importancia de las variables en el caso de hacer la selección después.\nLa manera más sencilla de hacer una selección de variables es usando la función base de R step\n\n\n. . .\n\nstep(lm1)\n\n\n\n\n\nstep(lm1)\n\nStart:  AIC=264.34\ncases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + TNK + UPM\n\n          Df Sum of Sq    RSS    AIC\n- TNK      1    189.73 5720.9 264.12\n&lt;none&gt;                 5531.2 264.34\n- RSK      1    217.33 5748.5 264.38\n- SHK_TAG  1    219.09 5750.3 264.40\n- TMK      1    406.40 5937.6 266.10\n- FM       1    491.92 6023.1 266.85\n- UPM      1    824.25 6355.4 269.70\n- PM       1    888.86 6420.0 270.24\n- TXK      1   2004.87 7536.1 278.73\n\nStep:  AIC=264.12\ncases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + UPM\n\n          Df Sum of Sq     RSS    AIC\n- SHK_TAG  1     165.3  5886.2 263.63\n- RSK      1     166.4  5887.3 263.64\n&lt;none&gt;                  5720.9 264.12\n- FM       1     355.0  6075.9 265.31\n- PM       1     953.3  6674.2 270.29\n- TXK      1    3398.1  9119.1 286.83\n- UPM      1    3568.2  9289.1 287.81\n- TMK      1    5462.2 11183.1 297.65\n\nStep:  AIC=263.63\ncases ~ FM + RSK + PM + TMK + TXK + UPM\n\n       Df Sum of Sq     RSS    AIC\n&lt;none&gt;               5886.2 263.63\n- FM    1     360.5  6246.7 264.78\n- RSK   1     365.4  6251.6 264.83\n- PM    1     902.1  6788.3 269.19\n- TXK   1    3294.4  9180.6 285.19\n- UPM   1    5177.5 11063.7 295.08\n- TMK   1    5354.8 11241.0 295.92\n\n\n\nCall:\nlm(formula = cases ~ FM + RSK + PM + TMK + TXK + UPM, data = rot_berlin)\n\nCoefficients:\n(Intercept)           FM          RSK           PM          TMK          TXK  \n   2689.346        8.294        3.722       -2.490      -27.534       19.915  \n        UPM  \n     -2.566  \n\n\n\n\n\n. . .\n\nDe acuerdo a la selección automática, nuestro modelo sería hasta el momento:\n\n\ncases ~ FM + RSK + PM + TMK + TXK + UPM\n\n\n\nNingún método de selección de variables automático es perfecto.\nEn este caso, aunque obvio, sabemos que las variables TMK y TXK deben estar correlacionadas al ser medidas de temperatura correspondientes al mismo día.\nBien podríamos deshechar una de las dos, pero cuando no sabemos la naturaleza de las variables, es mejor llevar a cabo un análisis de correlación antes de checar el modelo por sus supuestos.\nEn el módulo de AED ya hicimos una primera aproximación con las matrices de dispersión. Sin embargo, en ellas solo vimos el coeficiente de correlación junto al código de significancia.\nPara estar seguros de que eliminaremos variables correctamente, es mejor dar un vistazo a las matrices de correlación directamente.\n\n\n\n\n\n. . .\n\nPara calcular la matriz de correlación de un conjunto de datos usaremos la librería Hmisc\n\n. . .\n\nlibrary(Hmisc)\n\n\nAttaching package: 'Hmisc'\n\n\nThe following objects are masked from 'package:dplyr':\n\n    src, summarize\n\n\nThe following objects are masked from 'package:base':\n\n    format.pval, units\n\nmatriz &lt;- rcorr(as.matrix(rot_berlin[,c(4, 5, 7, 8, 9, 11)]))\nmatriz\n\n       FM   RSK    PM   TMK   TXK   UPM\nFM   1.00 -0.17 -0.24 -0.77 -0.78  0.54\nRSK -0.17  1.00 -0.02  0.29  0.27  0.01\nPM  -0.24 -0.02  1.00 -0.02 -0.01 -0.01\nTMK -0.77  0.29 -0.02  1.00  1.00 -0.71\nTXK -0.78  0.27 -0.01  1.00  1.00 -0.75\nUPM  0.54  0.01 -0.01 -0.71 -0.75  1.00\n\nn= 53 \n\n\nP\n    FM     RSK    PM     TMK    TXK    UPM   \nFM         0.2269 0.0797 0.0000 0.0000 0.0000\nRSK 0.2269        0.8742 0.0367 0.0544 0.9387\nPM  0.0797 0.8742        0.8797 0.9566 0.9596\nTMK 0.0000 0.0367 0.8797        0.0000 0.0000\nTXK 0.0000 0.0544 0.9566 0.0000        0.0000\nUPM 0.0000 0.9387 0.9596 0.0000 0.0000       \n\n\n. . .\n\nEn este paso, recomiendo el mirar por fuera de la diagonal y eliminar del análisis una variable de cualquier par que tenga un coeficiente de correlación exactamente igual a 1. En este caso, eliminaré TMK\n\n\n\n\n\nHasta aquí, nuestro modelo candidato sería el siguiente\n\n. . .\n\ncases ~ FM + RSK + PM + TXK + UPM\n\n\n\nLos algoritmos usados aplican criterios estadísticos, no biológicos (o generalizando, del problema en cuestión)\nConsiderando que el rotavirus se contagia principalmente por contacto directo o indirecto con heces fecales de alguien infectado ¿tiene sentido mantener las variables FM (velocidad media diaria del viento) y PM (presión atmosférica media diaria) como parte del modelo?\nPersonalmente, pienso que no. Para mí, el modelo candidato sería el siguiente\n\n\n. . .\n\nlm2 &lt;- lm(cases ~ RSK + TXK + UPM, data = rot_berlin)\n\n\n\n\n\n\nUna vez que tengo definido mi modelo candidato lo pondré a prueba de los supuestos:\n\n\n. . .\n\nlm2 &lt;- lm(cases ~ RSK + TXK + UPM, data = rot_berlin)\n\n\n\nVamos a introducir otra librería muy útil cuando nos encontramos ante modelos de múltiples variables: performance.\nperformance nos ofrece la posibilidad de chequear dos diagnósticos adicionales:\n\nLa predicción del modelo (basándose en una aproximación Bayesiana)\nLa colinearidad\n\nTambién se lo puede utilizar para modelos univariables (como la regresión lineal).\n\n\n. . .\n\nlibrary(performance)\ncheck_model(lm2)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nChequeo de la predicción posterior\nEste gráfico contrapone la densidad de la distribución de la variable de respuesta con las densidades de las predicciones obtenidas del modelo mediante un proceso de sampleo Bayesiano (por eso apreciamos varias líneas azules). Nos da una idea de qué tan adecuado es nuestro modelo para predecir los valores observados. Idealmente estas dos deberían superponerse.\n\n\n\n\n\n\n\n\n\n\n\n\n\nChequeo de la colinearidad\nAquí vemos distribuidas en el eje X cada una de las variables que estamos usando como predictores mientras que en el eje Y tenemos el factor de inflación de la varianza (VIF) que cada una de estas contribuye al modelo. Este plot nos ahorra indica lo que hemos venido hablando desde hace varios módulos: variables altamente correlacionadas agregan ruido a nuestros análisis.\n\n\n\n\n\n\n\nDel gráfico de la predicción posterior evidenciamos que los datos observados de incidencia de rotavirus son asimétricos hacia la izquierda (o asimetría positiva).\nUsualmente la transformación que mejor funciona en este caso es el logaritmo natural (de hecho el resto de datos que hemos usado en el curso coincidentalmente han presentado el mismo tipo de asimetría).\n\n\n. . .\n\nlm3 &lt;- lm(log(cases) ~ RSK + TXK + UPM, data = rot_berlin)\ncheck_model(lm3)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUna vez que hemos llegado a nuestro modelo, revisamos los resultads (este paso lo pudimos hacer en cada paso)\n\n\n. . .\n\nsummary(lm3)\n\n\nCall:\nlm(formula = log(cases) ~ RSK + TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-0.69125 -0.27551 -0.02353  0.23804  0.90017 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 14.900448   0.836130  17.821   &lt;2e-16 ***\nRSK          0.031833   0.073537   0.433    0.667    \nTXK         -0.160661   0.010810 -14.863   &lt;2e-16 ***\nUPM         -0.124081   0.009765 -12.706   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.3816 on 49 degrees of freedom\nMultiple R-squared:  0.8432,    Adjusted R-squared:  0.8336 \nF-statistic: 87.86 on 3 and 49 DF,  p-value: &lt; 2.2e-16\n\n\n. . .\n\nComo evidenciamos, la variable RSK no tiene un coeficiente significativo. Quitándola llegamos a nuestro modelo final\n\n. . .\n\nlm4 &lt;- lm(log(cases) ~ TXK + UPM, data = rot_berlin)\nsummary(lm4)\n\n\nCall:\nlm(formula = log(cases) ~ TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-0.69470 -0.25151 -0.03537  0.23618  0.83746 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 14.819541   0.808323   18.33   &lt;2e-16 ***\nTXK         -0.158730   0.009766  -16.25   &lt;2e-16 ***\nUPM         -0.122696   0.009151  -13.41   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.3785 on 50 degrees of freedom\nMultiple R-squared:  0.8426,    Adjusted R-squared:  0.8363 \nF-statistic: 133.9 on 2 and 50 DF,  p-value: &lt; 2.2e-16\n\n\n\n\n\n. . .\n\n\n\nCall:\nlm(formula = log(cases) ~ TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-0.69470 -0.25151 -0.03537  0.23618  0.83746 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 14.819541   0.808323   18.33   &lt;2e-16 ***\nTXK         -0.158730   0.009766  -16.25   &lt;2e-16 ***\nUPM         -0.122696   0.009151  -13.41   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.3785 on 50 degrees of freedom\nMultiple R-squared:  0.8426,    Adjusted R-squared:  0.8363 \nF-statistic: 133.9 on 2 and 50 DF,  p-value: &lt; 2.2e-16\n\n\n. . .\n\nHaremos uso nuevamente de la librería ggeffects para lidiar con la retransformación y ggplot2 junto a patchwork para graficar las predicciones.\n\n\nlibrary(ggeffects)\n\nWarning: package 'ggeffects' was built under R version 4.2.3\n\nlibrary(ggplot2)\nlibrary(patchwork)\npredicciones &lt;- ggpredict(lm4)\n\nModel has log-transformed response. Back-transforming predictions to\n  original response scale. Standard errors are still on the log-scale.\nModel has log-transformed response. Back-transforming predictions to\n  original response scale. Standard errors are still on the log-scale.\n\npredicciones\n\n$TXK\n# Predicted values of cases\n\nTXK | Predicted |           95% CI\n----------------------------------\n  0 |    249.79 | [183.78, 339.50]\n  5 |    112.95 | [ 90.90, 140.36]\n 10 |     51.08 | [ 44.43,  58.72]\n 15 |     23.10 | [ 20.80,  25.64]\n 20 |     10.44 | [  9.01,  12.10]\n 25 |      4.72 | [  3.76,   5.93]\n 30 |      2.14 | [  1.55,   2.93]\n\nAdjusted for:\n* UPM = 75.79\n\n$UPM\n# Predicted values of cases\n\nUPM | Predicted |           95% CI\n----------------------------------\n 60 |    167.80 | [123.27, 228.41]\n 65 |     90.86 | [ 72.61, 113.68]\n 70 |     49.20 | [ 42.38,  57.10]\n 75 |     26.64 | [ 23.97,  29.60]\n 80 |     14.42 | [ 12.67,  16.43]\n 85 |      7.81 | [  6.40,   9.53]\n 90 |      4.23 | [  3.19,   5.60]\n\nAdjusted for:\n* TXK = 14.71\n\nattr(,\"class\")\n[1] \"ggalleffects\" \"list\"        \nattr(,\"model.name\")\n[1] \"lm4\"\n\n\n\np1 &lt;- predicciones[[1]]\np2 &lt;- predicciones[[2]]\nplot(p1) + plot(p2)"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "index.html#ejercicio-5.1",
+    "href": "index.html#ejercicio-5.1",
+    "title": "Estadística aplicada con R",
+    "section": "Ejercicio 5.1",
+    "text": "Ejercicio 5.1\n\nRealiza un modelo de regresión lineal múltiple para los mismos datos que acabas de ver siguiendo tu propia iniciativa:\n\nPuedes cambiar el orden de los pasos que sugerí\nRealizar chequeos de la significancia de los coeficientes de los modelos candidatos entre paso y paso (cosa que yo no hice)\nPuedes llevar a cabo una selección de variables manual, o cambiar el argumento direction de la función step por “forward” o “backward”"
+  },
+  {
+    "objectID": "index.html#mi-bife-con-el-r2-continua",
+    "href": "index.html#mi-bife-con-el-r2-continua",
+    "title": "Estadística aplicada con R",
+    "section": "Mi bife con el \\(R^2\\) continua",
+    "text": "Mi bife con el \\(R^2\\) continua\n\n\nComo mencioné al final del anterior módulo, el coeficiente de determinación es una métrica que ha sido mal usada por decadas.\nLibrerías como performance que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas a la fecha (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que “mide” que tan bueno un modelo es.\nAunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.\nMediante la función compare_performance, se puede obtener un gráfico de telarañas que permite ver como el \\(R^2\\) no sirve de nada ante modelos mejor formulados.\nEn la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del \\(R^2\\) (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a su alcance los supuestos del modelo)\n\n\n\n\nplot(compare_performance(lm1, lm2, lm3, lm4))"
+  },
+  {
+    "objectID": "index.html#mi-bife-con-el-r2-continúa",
+    "href": "index.html#mi-bife-con-el-r2-continúa",
+    "title": "Estadística aplicada con R",
+    "section": "Mi bife con el \\(R^2\\) continúa",
+    "text": "Mi bife con el \\(R^2\\) continúa\n\n\nComo mencioné al final del anterior módulo, el coeficiente de determinación es una métrica que ha sido mal usada por decadas.\nLibrerías como performance que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas a la fecha (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que “mide” que tan bueno un modelo es.\nAunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.\nMediante la función compare_performance, se puede obtener un gráfico de telarañas que permite ver como el \\(R^2\\) no sirve de nada ante modelos mejor formulados.\nEn la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del \\(R^2\\) (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a su alcance los supuestos del modelo)\n\n\n\n\nplot(compare_performance(lm1, lm2, lm3, lm4))"
+  },
+  {
+    "objectID": "index.html#mi-bife-con-el-r2-continúa-1",
+    "href": "index.html#mi-bife-con-el-r2-continúa-1",
+    "title": "Estadística aplicada con R",
+    "section": "Mi bife con el \\(R^2\\) continúa",
+    "text": "Mi bife con el \\(R^2\\) continúa\n\n\nSolo para tener una idea, ya que no vimos los diagnósticos del modelo que según el \\(R^2\\) le debió dar un paseo a mi modelo final, démosles un vistazo ahora\n\n\n\n\ncheck_model(lm1)"
+  },
+  {
+    "objectID": "index.html#tetas-de-la-emilia-por-que-son-ricas-y-que-se-coma-verga-el-que-diga-lo-contrario-he-dicho-chuchas-de-sus-madres",
+    "href": "index.html#tetas-de-la-emilia-por-que-son-ricas-y-que-se-coma-verga-el-que-diga-lo-contrario-he-dicho-chuchas-de-sus-madres",
+    "title": "Estadística aplicada con R",
+    "section": "Tetas de la emilia por que son ricas y que se coma verga el que diga lo contrario he dicho chuchas de sus madres",
+    "text": "Tetas de la emilia por que son ricas y que se coma verga el que diga lo contrario he dicho chuchas de sus madres"
+  },
+  {
+    "objectID": "index.html#qué-son-los-modelos-lineales-generalizados",
+    "href": "index.html#qué-son-los-modelos-lineales-generalizados",
+    "title": "Estadística aplicada con R",
+    "section": "¿Qué son los modelos lineales generalizados?",
+    "text": "¿Qué son los modelos lineales generalizados?\n\n\nEn breve, los modelos lineales generalizados son aquellos que no consideran normalmente distribuida a la variable de interés.\nToman este nombre ya que generalizan la regresión lineal al permitirle relacionarse con la variable de respuesta a través de una función de enlace que transforma a esta última a la escala normal.\nPor tanto, estos modelos también compartirán los supuestos de la homogeneidad de la varianza y normalidad de los residuos. Aunque dependiendo de cada función de enlace a usarse, habrán otros estadísticos de interés.\nSon especialmente útiles en casos como los que mencioné durante los “pasas para realizar un estudio” donde remarcamos la importancia de tener en mente si la variable de respuesta a medir puede o no ser modelada bajo el paradigma normal.\nEn vista de lo basta que es la metodología dentro de este apartado de la estadística, nos enfocaremos en tan solo dos ejemplos:\n\nLa regresión de Poisson\nLa regresión binomial negativa"
+  },
+  {
+    "objectID": "index.html#sobre-el-r2-de-nuevo",
+    "href": "index.html#sobre-el-r2-de-nuevo",
+    "title": "Estadística aplicada con R",
+    "section": "Sobre el \\(R^2\\) de nuevo",
+    "text": "Sobre el \\(R^2\\) de nuevo\n\n\nComo mencioné al final del anterior módulo, el coeficiente de determinación es una métrica mal usada.\nLibrerías como performance que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas a la fecha (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que “mide” que tan bueno es un modelo.\nAunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.\nMediante la función compare_performance, se puede obtener un gráfico de telarañas que permite ver como el \\(R^2\\) no sirve de nada ante modelos mejor formulados.\nEn la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del \\(R^2\\) (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a nuestro alcance los supuestos del método).\n\n\n\n\nrot_berlin$cases_comp &lt;- rot_berlin$cases + 1 \nlm3 &lt;- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin)\nplot(compare_performance(lm1, lm2, lm3))"
+  },
+  {
+    "objectID": "index.html#sobre-el-r2-de-nuevo-1",
+    "href": "index.html#sobre-el-r2-de-nuevo-1",
+    "title": "Estadística aplicada con R",
+    "section": "Sobre el \\(R^2\\) de nuevo",
+    "text": "Sobre el \\(R^2\\) de nuevo\n\n\nSolo para tener una idea, ya que no vimos los diagnósticos del modelo que según el \\(R^2\\) sería el mejor, démosles un vistazo ahora\n\n\n\n\ncheck_model(lm1)"
+  },
+  {
+    "objectID": "index.html#regresión-de-poisson",
+    "href": "index.html#regresión-de-poisson",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión de Poisson",
+    "text": "Regresión de Poisson\n\n\nEn breve, la regresión de Poisson se usa para el modelado de datos discretos que representan el conteo de algún evento.\nEn el ejemplo que consideramos anteriormente, el número de casos de rotavirus es un ejemplo de este tipo de eventos.\nLa razón por la que ese modelo funcionó relativamente bien es porque inadvertidamente impusimos la función de enlace sobre los datos al aplicar la transformación logarítmica.\nVeamos que sucede al implementarla en R\n\n\n\n\nglm1 &lt;- glm(cases ~ TXK + UPM, data = rot_berlin, family = \"poisson\")"
+  },
+  {
+    "objectID": "index.html#regresión-de-poisson-en-r",
+    "href": "index.html#regresión-de-poisson-en-r",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión de Poisson en R",
+    "text": "Regresión de Poisson en R\n\n\nEn breve, la regresión de Poisson se usa para el modelado de datos discretos que representan el conteo de algún evento.\nEn el ejemplo que consideramos anteriormente, el número de casos de rotavirus es un ejemplo de este tipo de eventos.\nLa razón por la que ese modelo funcionó relativamente bien es porque inadvertidamente impusimos la función de enlace sobre los datos al aplicar la transformación logarítmica.\nVeamos que sucede al implementarla en R\n\n\n\n\nglm1 &lt;- glm(cases ~ TXK + UPM, data = rot_berlin, family = \"poisson\")\ncheck_model(glm1)"
+  },
+  {
+    "objectID": "index.html#regresión-de-poisson-en-r-1",
+    "href": "index.html#regresión-de-poisson-en-r-1",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión de Poisson en R",
+    "text": "Regresión de Poisson en R"
+  },
+  {
+    "objectID": "index.html#tetas-de-emilia",
+    "href": "index.html#tetas-de-emilia",
+    "title": "Estadística aplicada con R",
+    "section": "tetas de emilia",
+    "text": "tetas de emilia"
+  },
+  {
+    "objectID": "index.html#regresión-binomial-negativa",
+    "href": "index.html#regresión-binomial-negativa",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión binomial negativa",
+    "text": "Regresión binomial negativa\n\n\nVemos que el modelo usando la regresión de Poisson no mejora mucho en términos de los supuestos.\nComo mencionamos, el gráfico de sobredispersión ya nos da un indicativo de que el modelo es incorrecto.\nUna alternativa para lidiar con sobredispersión es usar la regresión binomial negativa\nPara ello, usaremos la librería MASS que ofrece esta funcionalidad\n\n\n\n\nlibrary(MASS)\nglm2 &lt;- glm.nb(cases ~ TXK + UPM, data = rot_berlin)\ncheck_model(glm2)"
+  },
+  {
+    "objectID": "index.html#regresión-binomial-negativa-1",
+    "href": "index.html#regresión-binomial-negativa-1",
+    "title": "Estadística aplicada con R",
+    "section": "Regresión binomial negativa",
+    "text": "Regresión binomial negativa"
+  },
+  {
+    "objectID": "index.html#emilia-quiero-culiarte",
+    "href": "index.html#emilia-quiero-culiarte",
+    "title": "Estadística aplicada con R",
+    "section": "Emilia quiero culiarte",
+    "text": "Emilia quiero culiarte"
+  },
+  {
+    "objectID": "index.html#introducción",
+    "href": "index.html#introducción",
+    "title": "Estadística aplicada con R",
+    "section": "Introducción",
+    "text": "Introducción\n\n\nEs una extensión de la regresión lineal (simple) con la que concluimos el módulo anterior.\nEs usada para predecir una sola variable continua (y) en función de múltiples predictores continuos (un set de variables X).\nTiene prácticamente los mismos supuestos que la regresión lineal simple:\n\nLinearidad de los predictores\nHomogeneidad de la varianza (homocedasticidad)\nIndependencia de los errores (residuos)\nNormalidad de los residuos\nIndependencia de los predictores\n\nUn ejemplo de una regresión múltiple podría expresarse mediante la siguiente ecuación\n\n\n\n\\[\\begin{align}\ny &= \\beta_0 + \\beta_1\\,X_1 + \\beta_2\\,X_2 \\dots \\beta_n\\,X_n\n\\end{align}\\]"
+  },
+  {
+    "objectID": "index.html#comparación-de-modelos",
+    "href": "index.html#comparación-de-modelos",
+    "title": "Estadística aplicada con R",
+    "section": "Comparación de modelos",
+    "text": "Comparación de modelos\n\n\nComparemos primero todos los modelos que hemos llevado a cabo hasta aquí\n\n\n\n\ncompare_performance(lm1, lm2, lm3, glm1, glm2, rank = T)\n\n# Comparison of Model Performance Indices\n\nName |  Model |   RMSE |  Sigma | AIC weights | AICc weights | BIC weights | Performance-Score\n----------------------------------------------------------------------------------------------\nglm2 | negbin | 32.373 |  1.024 |       0.946 |        0.946 |       0.946 |            79.39%\nlm3  |     lm |  0.460 |  0.471 |       0.054 |        0.054 |       0.054 |            43.41%\nglm1 |    glm | 21.666 |  2.877 |    1.54e-74 |     1.77e-74 |    4.57e-74 |            24.07%\nlm1  |     lm | 15.258 | 16.438 |    5.02e-13 |     9.14e-14 |    7.37e-16 |            13.18%\nlm2  |     lm | 18.239 | 18.675 |    1.86e-15 |     1.86e-15 |    1.86e-15 |             8.86%"
+  },
+  {
+    "objectID": "index.html#jasp",
+    "href": "index.html#jasp",
+    "title": "Estadística aplicada con R",
+    "section": "JASP",
+    "text": "JASP"
+  },
+  {
+    "objectID": "index.html#gracias",
+    "href": "index.html#gracias",
+    "title": "Estadística aplicada con R",
+    "section": "¡Gracias!",
+    "text": "¡Gracias!"
+  }
+]
