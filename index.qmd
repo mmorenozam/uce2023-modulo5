@@ -581,4 +581,4 @@ compare_performance(lm1, lm2, lm3, glm1, glm2, rank = T)
 
 ![](images/jasp.png){fig-align="center"}
 
-## ¡Gracias!
+# ¡Gracias!
