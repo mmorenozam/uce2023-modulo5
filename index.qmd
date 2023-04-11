@@ -26,7 +26,7 @@ format:
 
 # Regresión lineal múltiple 
 
-## Introducción
+## Introducción {.smaller}
 
 ::: incremental
 
@@ -82,7 +82,7 @@ y &= \beta_0 + \beta_1\,X_1 + \beta_2\,X_2 \dots \beta_n\,X_n
     
     7.    Interpretar resultados.
     
--   Estos pasos no representan una línea recta. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis dependerán más de su buen entendimiento de los datos y los fenómenos que deseen explicar.
+-   Estos pasos no representan una sucesión. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis estarán de la mano de más de su buen entendimiento de los datos y los fenómenos que deseen explicar.
 
 :::
 
@@ -381,6 +381,34 @@ library(performance)
 check_model(lm3)
 ```
 
+## Removiendo outliers {.smaller}
+
+::: incremental
+
+-   La distancia de Cook nos ha ayudado a identificar una observación claramente influyente.
+
+-   Para continuar, removeremos esa observación para ver que tanto ayuda a nuestro análisis.
+
+:::
+
+. . . 
+
+```{r echo=T, eval=F, error=T, fig.align='center', fig.width=8, fig.height=10}
+rot_berlin <- rot_berlin[-22, ]
+lm4 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin)
+check_model(lm4)
+```
+
+## Removiendo outliers {.smaller}
+
+
+```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+rot_berlin_out <- rot_berlin[-22, ]
+lm4 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)
+check_model(lm4)
+```
+
+
 ## Modelo final {.smaller .scrollable}
 
 ::: incremental
@@ -392,7 +420,7 @@ check_model(lm3)
 . . . 
 
 ```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-summary(lm3)
+summary(lm4)
 ```
 
 
@@ -402,7 +430,7 @@ summary(lm3)
 . . . 
 
 ```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-summary(lm3)
+summary(lm4)
 ```
 
 . . .
@@ -413,7 +441,7 @@ summary(lm3)
 library(ggeffects)
 library(ggplot2)
 library(patchwork)
-predicciones <- ggpredict(lm3)
+predicciones <- ggpredict(lm4)
 predicciones[[1]]
 ```
 
@@ -463,9 +491,11 @@ plot(p1) + plot(p2)
 . . .
 
 ```{r echo=T, eval=T, error=T, fig.align='center', fig.width=5, fig.height=5}
-rot_berlin$cases_comp <- rot_berlin$cases + 1 
+rot_berlin$cases_comp <- rot_berlin$cases + 1
+rot_berlin_out$cases_comp <- rot_berlin_out$cases + 1
 lm3 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin)
-plot(compare_performance(lm1, lm2, lm3))
+lm4 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin_out)
+plot(compare_performance(lm1, lm2, lm3, lm4))
 ```
 
 ## Sobre el $R^2$ de nuevo {.smaller .scrollable visibility="uncounted"}
@@ -520,14 +550,14 @@ check_model(lm1)
 . . .
 
 ```{r echo=T, eval=F, error=T, fig.align='center', fig.width=8, fig.height=10}
-glm1 <- glm(cases ~ TXK + UPM, data = rot_berlin, family = "poisson")
+glm1 <- glm(cases ~ TXK + UPM, data = rot_berlin_out, family = "poisson")
 check_model(glm1)
 ```
 
 ## Regresión de Poisson en R
 
 ```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-glm1 <- glm(cases ~ TXK + UPM, data = rot_berlin, family = "poisson")
+glm1 <- glm(cases ~ TXK + UPM, data = rot_berlin_out, family = "poisson")
 check_model(glm1)
 ```
 
@@ -549,7 +579,7 @@ check_model(glm1)
 
 ```{r echo=T, eval=F, error=T, fig.align='center', fig.width=8, fig.height=10}
 library(MASS)
-glm2 <- glm.nb(cases ~ TXK + UPM, data = rot_berlin)
+glm2 <- glm.nb(cases ~ TXK + UPM, data = rot_berlin_out)
 check_model(glm2)
 ```
 
@@ -557,7 +587,7 @@ check_model(glm2)
 
 ```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
 library(MASS)
-glm2 <- glm.nb(cases ~ TXK + UPM, data = rot_berlin)
+glm2 <- glm.nb(cases ~ TXK + UPM, data = rot_berlin_out)
 check_model(glm2)
 ```
 
@@ -572,7 +602,7 @@ check_model(glm2)
 . . .
 
 ```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-compare_performance(lm1, lm2, lm3, glm1, glm2, rank = T)
+compare_performance(lm1, lm2, lm3, lm4, glm1, glm2, rank = T)
 ```
 
 # Antes de terminar

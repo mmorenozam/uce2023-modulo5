@@ -411,7 +411,7 @@ Mauricio Moreno, PhD
 <h1>Regresión lineal múltiple</h1>
 
 </section>
-<section id="introducción" class="slide level2">
+<section id="introducción" class="slide level2 smaller">
 <h2>Introducción</h2>
 <div>
 <ul>
@@ -450,7 +450,7 @@ y &amp;= \beta_0 + \beta_1\,X_1 + \beta_2\,X_2 \dots \beta_n\,X_n
 <li class="fragment"><p>Realizar transformaciones de ser necesario.</p></li>
 <li class="fragment"><p>Interpretar resultados.</p></li>
 </ol></li>
-<li class="fragment"><p>Estos pasos no representan una línea recta. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis dependerán más de su buen entendimiento de los datos y los fenómenos que deseen explicar.</p></li>
+<li class="fragment"><p>Estos pasos no representan una sucesión. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis estarán de la mano de más de su buen entendimiento de los datos y los fenómenos que deseen explicar.</p></li>
 </ul>
 </div>
 </section>
@@ -785,6 +785,26 @@ UPM 0.0824 0.8562 0.0000 0.0000       </code></pre>
 <h2>Transformaciones</h2>
 
 <img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="768" class="r-stretch quarto-figure-center"></section>
+<section id="removiendo-outliers" class="slide level2 smaller">
+<h2>Removiendo outliers</h2>
+<div>
+<ul>
+<li class="fragment"><p>La distancia de Cook nos ha ayudado a identificar una observación claramente influyente.</p></li>
+<li class="fragment"><p>Para continuar, removeremos esa observación para ver que tanto ayuda a nuestro análisis.</p></li>
+</ul>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>rot_berlin <span class="ot">&lt;-</span> rot_berlin[<span class="sc">-</span><span class="dv">22</span>, ]</span>
+<span id="cb15-2"><a href="#cb15-2"></a>lm4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cases <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin)</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">check_model</span>(lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="removiendo-outliers-1" class="slide level2 smaller">
+<h2>Removiendo outliers</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="768" class="r-stretch quarto-figure-center"></section>
 <section id="modelo-final" class="slide level2 smaller scrollable">
 <h2>Modelo final</h2>
 <div>
@@ -794,27 +814,27 @@ UPM 0.0824 0.8562 0.0000 0.0000       </code></pre>
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">summary</span>(lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">summary</span>(lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin)
+lm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--1.72811 -0.24433  0.01716  0.28480  0.83067 
+-1.56135 -0.25645 -0.01463  0.23747  0.89716 
 
 Coefficients:
              Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 13.856579   0.807307   17.16   &lt;2e-16 ***
-TXK         -0.146015   0.010136  -14.40   &lt;2e-16 ***
-UPM         -0.112138   0.009152  -12.25   &lt;2e-16 ***
+(Intercept) 15.115325   0.785118   19.25   &lt;2e-16 ***
+TXK         -0.156583   0.009426  -16.61   &lt;2e-16 ***
+UPM         -0.126306   0.008891  -14.21   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.4707 on 62 degrees of freedom
-Multiple R-squared:  0.7778,    Adjusted R-squared:  0.7706 
-F-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 0.4208 on 61 degrees of freedom
+Multiple R-squared:  0.8241,    Adjusted R-squared:  0.8184 
+F-statistic: 142.9 on 2 and 61 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
@@ -826,23 +846,23 @@ F-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin)
+lm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--1.72811 -0.24433  0.01716  0.28480  0.83067 
+-1.56135 -0.25645 -0.01463  0.23747  0.89716 
 
 Coefficients:
              Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 13.856579   0.807307   17.16   &lt;2e-16 ***
-TXK         -0.146015   0.010136  -14.40   &lt;2e-16 ***
-UPM         -0.112138   0.009152  -12.25   &lt;2e-16 ***
+(Intercept) 15.115325   0.785118   19.25   &lt;2e-16 ***
+TXK         -0.156583   0.009426  -16.61   &lt;2e-16 ***
+UPM         -0.126306   0.008891  -14.21   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.4707 on 62 degrees of freedom
-Multiple R-squared:  0.7778,    Adjusted R-squared:  0.7706 
-F-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 0.4208 on 61 degrees of freedom
+Multiple R-squared:  0.8241,    Adjusted R-squared:  0.8184 
+F-statistic: 142.9 on 2 and 61 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
@@ -851,60 +871,60 @@ F-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Haremos uso nuevamente de la librería <code>ggeffects</code> para lidiar con la retransformación y <code>ggplot2</code> junto a <code>patchwork</code> para graficar las predicciones.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">library</span>(ggeffects)</span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb18-4"><a href="#cb18-4"></a>predicciones <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(lm3)</span>
-<span id="cb18-5"><a href="#cb18-5"></a>predicciones[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb19-4"><a href="#cb19-4"></a>predicciones <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(lm4)</span>
+<span id="cb19-5"><a href="#cb19-5"></a>predicciones[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Predicted values of cases
 
 TXK | Predicted |           95% CI
 ----------------------------------
-  0 |    210.45 | [152.49, 290.31]
-  5 |    100.89 | [ 80.04, 127.12]
- 10 |     48.10 | [ 41.22,  56.10]
- 15 |     22.66 | [ 20.05,  25.59]
- 20 |     10.40 | [  8.73,  12.36]
- 25 |      4.49 | [  3.33,   5.97]
- 30 |      1.65 | [  0.90,   2.69]
+  0 |    243.15 | [180.49, 327.44]
+  5 |    110.59 | [ 89.35, 136.83]
+ 10 |     50.01 | [ 43.45,  57.53]
+ 15 |     22.31 | [ 19.98,  24.90]
+ 20 |      9.66 | [  8.22,  11.32]
+ 25 |      3.87 | [  2.91,   5.07]
+ 30 |      1.23 | [  0.64,   2.03]
 
 Adjusted for:
-* UPM = 75.82</code></pre>
+* UPM = 76.14</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>predicciones[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>predicciones[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Predicted values of cases
 
 UPM | Predicted |           95% CI
 ----------------------------------
- 55 |    253.38 | [169.78, 377.88]
- 60 |    144.20 | [105.27, 197.39]
- 65 |     81.88 | [ 64.86, 103.30]
- 70 |     46.31 | [ 39.40,  54.41]
- 75 |     26.01 | [ 23.01,  29.38]
- 80 |     14.42 | [ 12.41,  16.72]
- 85 |      7.80 | [  6.17,   9.80]
- 95 |      1.87 | [  0.98,   3.15]
+ 60 |    186.40 | [137.04, 253.40]
+ 65 |     98.65 | [ 78.63, 123.71]
+ 70 |     51.99 | [ 44.54,  60.67]
+ 75 |     27.18 | [ 24.32,  30.37]
+ 80 |     13.99 | [ 12.22,  15.99]
+ 85 |      6.97 | [  5.59,   8.63]
+ 90 |      3.24 | [  2.24,   4.54]
+ 95 |      1.25 | [  0.59,   2.20]
 
 Adjusted for:
-* TXK = 14.73</code></pre>
+* TXK = 14.71</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>p1 <span class="ot">&lt;-</span> predicciones[[<span class="dv">1</span>]]</span>
-<span id="cb22-2"><a href="#cb22-2"></a>p2 <span class="ot">&lt;-</span> predicciones[[<span class="dv">2</span>]]</span>
-<span id="cb22-3"><a href="#cb22-3"></a><span class="fu">plot</span>(p1) <span class="sc">+</span> <span class="fu">plot</span>(p2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>p1 <span class="ot">&lt;-</span> predicciones[[<span class="dv">1</span>]]</span>
+<span id="cb23-2"><a href="#cb23-2"></a>p2 <span class="ot">&lt;-</span> predicciones[[<span class="dv">2</span>]]</span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="fu">plot</span>(p1) <span class="sc">+</span> <span class="fu">plot</span>(p2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="768"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.png" width="768"></p>
 </figure>
 </div>
 </div>
@@ -940,13 +960,15 @@ Adjusted for:
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>rot_berlin<span class="sc">$</span>cases_comp <span class="ot">&lt;-</span> rot_berlin<span class="sc">$</span>cases <span class="sc">+</span> <span class="dv">1</span> </span>
-<span id="cb23-2"><a href="#cb23-2"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cases_comp) <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin)</span>
-<span id="cb23-3"><a href="#cb23-3"></a><span class="fu">plot</span>(<span class="fu">compare_performance</span>(lm1, lm2, lm3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>rot_berlin<span class="sc">$</span>cases_comp <span class="ot">&lt;-</span> rot_berlin<span class="sc">$</span>cases <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>rot_berlin_out<span class="sc">$</span>cases_comp <span class="ot">&lt;-</span> rot_berlin_out<span class="sc">$</span>cases <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cases_comp) <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin)</span>
+<span id="cb24-4"><a href="#cb24-4"></a>lm4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cases_comp) <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin_out)</span>
+<span id="cb24-5"><a href="#cb24-5"></a><span class="fu">plot</span>(<span class="fu">compare_performance</span>(lm1, lm2, lm3, lm4))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -962,11 +984,11 @@ Adjusted for:
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">check_model</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">check_model</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.png" width="768"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="768"></p>
 </figure>
 </div>
 </div>
@@ -1006,15 +1028,15 @@ Adjusted for:
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>glm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(cases <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="fu">check_model</span>(glm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>glm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(cases <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin_out, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">check_model</span>(glm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
 <section id="regresión-de-poisson-en-r-1" class="slide level2">
 <h2>Regresión de Poisson en R</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="768" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-26-1.png" width="768" class="r-stretch quarto-figure-center"></section>
 <section id="regresión-binomial-negativa" class="slide level2 smaller">
 <h2>Regresión binomial negativa</h2>
 <div>
@@ -1027,16 +1049,16 @@ Adjusted for:
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb26-2"><a href="#cb26-2"></a>glm2 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(cases <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin)</span>
-<span id="cb26-3"><a href="#cb26-3"></a><span class="fu">check_model</span>(glm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb27-2"><a href="#cb27-2"></a>glm2 <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(cases <span class="sc">~</span> TXK <span class="sc">+</span> UPM, <span class="at">data =</span> rot_berlin_out)</span>
+<span id="cb27-3"><a href="#cb27-3"></a><span class="fu">check_model</span>(glm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
 <section id="regresión-binomial-negativa-1" class="slide level2 smaller">
 <h2>Regresión binomial negativa</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-26-1.png" width="768" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-28-1.png" width="768" class="r-stretch quarto-figure-center"></section>
 <section id="comparación-de-modelos" class="slide level2">
 <h2>Comparación de modelos</h2>
 <div>
@@ -1046,17 +1068,18 @@ Adjusted for:
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">compare_performance</span>(lm1, lm2, lm3, glm1, glm2, <span class="at">rank =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">compare_performance</span>(lm1, lm2, lm3, lm4, glm1, glm2, <span class="at">rank =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Comparison of Model Performance Indices
 
 Name |  Model |   RMSE |  Sigma | AIC weights | AICc weights | BIC weights | Performance-Score
 ----------------------------------------------------------------------------------------------
-glm2 | negbin | 32.373 |  1.024 |       0.946 |        0.946 |       0.946 |            79.39%
-lm3  |     lm |  0.460 |  0.471 |       0.054 |        0.054 |       0.054 |            43.41%
-glm1 |    glm | 21.666 |  2.877 |    1.54e-74 |     1.77e-74 |    4.57e-74 |            24.07%
-lm1  |     lm | 15.258 | 16.438 |    5.02e-13 |     9.14e-14 |    7.37e-16 |            13.18%
-lm2  |     lm | 18.239 | 18.675 |    1.86e-15 |     1.86e-15 |    1.86e-15 |             8.86%</code></pre>
+glm2 | negbin | 20.876 |  1.029 |       0.888 |        0.888 |       0.888 |            79.33%
+lm4  |     lm |  0.411 |  0.421 |       0.112 |        0.112 |       0.112 |            47.53%
+lm3  |     lm |  0.460 |  0.471 |    9.54e-07 |     9.60e-07 |    9.25e-07 |            39.90%
+glm1 |    glm | 17.426 |  2.423 |    1.98e-44 |     2.28e-44 |    5.83e-44 |            21.18%
+lm1  |     lm | 15.258 | 16.438 |    8.90e-18 |     1.63e-18 |    1.27e-20 |             7.94%
+lm2  |     lm | 18.239 | 18.675 |    3.29e-20 |     3.31e-20 |    3.19e-20 |             2.58%</code></pre>
 </div>
 </div>
 </div>

@@ -214,14 +214,14 @@
     "href": "index.html#interpretación",
     "title": "Estadística aplicada con R",
     "section": "Interpretación",
-    "text": "Interpretación\n\n\n\n\nCall:\nlm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1.72811 -0.24433  0.01716  0.28480  0.83067 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 13.856579   0.807307   17.16   &lt;2e-16 ***\nTXK         -0.146015   0.010136  -14.40   &lt;2e-16 ***\nUPM         -0.112138   0.009152  -12.25   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.4707 on 62 degrees of freedom\nMultiple R-squared:  0.7778,    Adjusted R-squared:  0.7706 \nF-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16\n\n\n\n\n\nHaremos uso nuevamente de la librería ggeffects para lidiar con la retransformación y ggplot2 junto a patchwork para graficar las predicciones.\n\n\nlibrary(ggeffects)\nlibrary(ggplot2)\nlibrary(patchwork)\npredicciones &lt;- ggpredict(lm3)\npredicciones[[1]]\n\n# Predicted values of cases\n\nTXK | Predicted |           95% CI\n----------------------------------\n  0 |    210.45 | [152.49, 290.31]\n  5 |    100.89 | [ 80.04, 127.12]\n 10 |     48.10 | [ 41.22,  56.10]\n 15 |     22.66 | [ 20.05,  25.59]\n 20 |     10.40 | [  8.73,  12.36]\n 25 |      4.49 | [  3.33,   5.97]\n 30 |      1.65 | [  0.90,   2.69]\n\nAdjusted for:\n* UPM = 75.82\n\n\n\n\n\npredicciones[[2]]\n\n# Predicted values of cases\n\nUPM | Predicted |           95% CI\n----------------------------------\n 55 |    253.38 | [169.78, 377.88]\n 60 |    144.20 | [105.27, 197.39]\n 65 |     81.88 | [ 64.86, 103.30]\n 70 |     46.31 | [ 39.40,  54.41]\n 75 |     26.01 | [ 23.01,  29.38]\n 80 |     14.42 | [ 12.41,  16.72]\n 85 |      7.80 | [  6.17,   9.80]\n 95 |      1.87 | [  0.98,   3.15]\n\nAdjusted for:\n* TXK = 14.73\n\n\n\n\n\np1 &lt;- predicciones[[1]]\np2 &lt;- predicciones[[2]]\nplot(p1) + plot(p2)"
+    "text": "Interpretación\n\n\n\n\nCall:\nlm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1.56135 -0.25645 -0.01463  0.23747  0.89716 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 15.115325   0.785118   19.25   &lt;2e-16 ***\nTXK         -0.156583   0.009426  -16.61   &lt;2e-16 ***\nUPM         -0.126306   0.008891  -14.21   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.4208 on 61 degrees of freedom\nMultiple R-squared:  0.8241,    Adjusted R-squared:  0.8184 \nF-statistic: 142.9 on 2 and 61 DF,  p-value: &lt; 2.2e-16\n\n\n\n\n\nHaremos uso nuevamente de la librería ggeffects para lidiar con la retransformación y ggplot2 junto a patchwork para graficar las predicciones.\n\n\nlibrary(ggeffects)\nlibrary(ggplot2)\nlibrary(patchwork)\npredicciones &lt;- ggpredict(lm4)\npredicciones[[1]]\n\n# Predicted values of cases\n\nTXK | Predicted |           95% CI\n----------------------------------\n  0 |    243.15 | [180.49, 327.44]\n  5 |    110.59 | [ 89.35, 136.83]\n 10 |     50.01 | [ 43.45,  57.53]\n 15 |     22.31 | [ 19.98,  24.90]\n 20 |      9.66 | [  8.22,  11.32]\n 25 |      3.87 | [  2.91,   5.07]\n 30 |      1.23 | [  0.64,   2.03]\n\nAdjusted for:\n* UPM = 76.14\n\n\n\n\n\npredicciones[[2]]\n\n# Predicted values of cases\n\nUPM | Predicted |           95% CI\n----------------------------------\n 60 |    186.40 | [137.04, 253.40]\n 65 |     98.65 | [ 78.63, 123.71]\n 70 |     51.99 | [ 44.54,  60.67]\n 75 |     27.18 | [ 24.32,  30.37]\n 80 |     13.99 | [ 12.22,  15.99]\n 85 |      6.97 | [  5.59,   8.63]\n 90 |      3.24 | [  2.24,   4.54]\n 95 |      1.25 | [  0.59,   2.20]\n\nAdjusted for:\n* TXK = 14.71\n\n\n\n\n\np1 &lt;- predicciones[[1]]\np2 &lt;- predicciones[[2]]\nplot(p1) + plot(p2)"
   },
   {
     "objectID": "index.html#pasos-para-una-regresión-múltiple",
     "href": "index.html#pasos-para-una-regresión-múltiple",
     "title": "Estadística aplicada con R",
     "section": "Pasos para una regresión múltiple",
-    "text": "Pasos para una regresión múltiple\n\n\nA diferencia de la regresión lineal simple, no existe un proceso estructurado de pasos a seguir en el caso de su extensión a dos o más variables continuas como predictores.\nEl llegar a un modelo apropiado se convierte en lo que algunos estadísticos llaman el “arte de modelar”.\nEn las siguientes diapositivas voy a presentar la manera en que usualmente hago este tipo de modelos y que resumiré en:\n\nEmpezar por lo que se le conoce como un modelo completo (incluyendo todas las variables continuas disponibles).\nRealizar una selección automática de variables sobre el modelo del paso 1.\nChecar manualmente por colinearidad entre las variables del modelo resultante del paso 2.\nRevisar si las variables incluidas tienen sentido (biológico),\nChecar los supuestos de normalidad y homocedasticidad.\nRealizar transformaciones de ser necesario.\nInterpretar resultados.\n\nEstos pasos no representan una línea recta. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis dependerán más de su buen entendimiento de los datos y los fenómenos que deseen explicar."
+    "text": "Pasos para una regresión múltiple\n\n\nA diferencia de la regresión lineal simple, no existe un proceso estructurado de pasos a seguir en el caso de su extensión a dos o más variables continuas como predictores.\nEl llegar a un modelo apropiado se convierte en lo que algunos estadísticos llaman el “arte de modelar”.\nEn las siguientes diapositivas voy a presentar la manera en que usualmente hago este tipo de modelos y que resumiré en:\n\nEmpezar por lo que se le conoce como un modelo completo (incluyendo todas las variables continuas disponibles).\nRealizar una selección automática de variables sobre el modelo del paso 1.\nChecar manualmente por colinearidad entre las variables del modelo resultante del paso 2.\nRevisar si las variables incluidas tienen sentido (biológico),\nChecar los supuestos de normalidad y homocedasticidad.\nRealizar transformaciones de ser necesario.\nInterpretar resultados.\n\nEstos pasos no representan una sucesión. Dependiendo del problema, quizá ni siquiera sirvan y sus análisis estarán de la mano de más de su buen entendimiento de los datos y los fenómenos que deseen explicar."
   },
   {
     "objectID": "index.html#modelo-completo",
@@ -263,7 +263,7 @@
     "href": "index.html#modelo-final",
     "title": "Estadística aplicada con R",
     "section": "Modelo final",
-    "text": "Modelo final\n\n\nUna vez que hemos llegado a nuestro modelo, revisamos los resultads (este paso lo pudimos hacer en cada paso)\n\n\n\n\nsummary(lm3)\n\n\nCall:\nlm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1.72811 -0.24433  0.01716  0.28480  0.83067 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 13.856579   0.807307   17.16   &lt;2e-16 ***\nTXK         -0.146015   0.010136  -14.40   &lt;2e-16 ***\nUPM         -0.112138   0.009152  -12.25   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.4707 on 62 degrees of freedom\nMultiple R-squared:  0.7778,    Adjusted R-squared:  0.7706 \nF-statistic: 108.5 on 2 and 62 DF,  p-value: &lt; 2.2e-16"
+    "text": "Modelo final\n\n\nUna vez que hemos llegado a nuestro modelo, revisamos los resultads (este paso lo pudimos hacer en cada paso)\n\n\n\n\nsummary(lm4)\n\n\nCall:\nlm(formula = log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1.56135 -0.25645 -0.01463  0.23747  0.89716 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 15.115325   0.785118   19.25   &lt;2e-16 ***\nTXK         -0.156583   0.009426  -16.61   &lt;2e-16 ***\nUPM         -0.126306   0.008891  -14.21   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.4208 on 61 degrees of freedom\nMultiple R-squared:  0.8241,    Adjusted R-squared:  0.8184 \nF-statistic: 142.9 on 2 and 61 DF,  p-value: &lt; 2.2e-16"
   },
   {
     "objectID": "index.html",
@@ -326,7 +326,7 @@
     "href": "index.html#sobre-el-r2-de-nuevo",
     "title": "Estadística aplicada con R",
     "section": "Sobre el \\(R^2\\) de nuevo",
-    "text": "Sobre el \\(R^2\\) de nuevo\n\n\nComo mencioné al final del anterior módulo, el coeficiente de determinación es una métrica mal usada.\nLibrerías como performance que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas a la fecha (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que “mide” que tan bueno es un modelo.\nAunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.\nMediante la función compare_performance, se puede obtener un gráfico de telarañas que permite ver como el \\(R^2\\) no sirve de nada ante modelos mejor formulados.\nEn la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del \\(R^2\\) (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a nuestro alcance los supuestos del método).\n\n\n\n\nrot_berlin$cases_comp &lt;- rot_berlin$cases + 1 \nlm3 &lt;- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin)\nplot(compare_performance(lm1, lm2, lm3))"
+    "text": "Sobre el \\(R^2\\) de nuevo\n\n\nComo mencioné al final del anterior módulo, el coeficiente de determinación es una métrica mal usada.\nLibrerías como performance que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas a la fecha (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que “mide” que tan bueno es un modelo.\nAunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.\nMediante la función compare_performance, se puede obtener un gráfico de telarañas que permite ver como el \\(R^2\\) no sirve de nada ante modelos mejor formulados.\nEn la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del \\(R^2\\) (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a nuestro alcance los supuestos del método).\n\n\n\n\nrot_berlin$cases_comp &lt;- rot_berlin$cases + 1\nrot_berlin_out$cases_comp &lt;- rot_berlin_out$cases + 1\nlm3 &lt;- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin)\nlm4 &lt;- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin_out)\nplot(compare_performance(lm1, lm2, lm3, lm4))"
   },
   {
     "objectID": "index.html#sobre-el-r2-de-nuevo-1",
@@ -347,7 +347,7 @@
     "href": "index.html#regresión-de-poisson-en-r",
     "title": "Estadística aplicada con R",
     "section": "Regresión de Poisson en R",
-    "text": "Regresión de Poisson en R\n\n\nEn breve, la regresión de Poisson se usa para el modelado de datos discretos que representan el conteo de algún evento.\nEn el ejemplo que consideramos anteriormente, el número de casos de rotavirus es un ejemplo de este tipo de eventos.\nLa razón por la que ese modelo funcionó relativamente bien es porque inadvertidamente impusimos la función de enlace sobre los datos al aplicar la transformación logarítmica.\nVeamos que sucede al implementarla en R\n\n\n\n\nglm1 &lt;- glm(cases ~ TXK + UPM, data = rot_berlin, family = \"poisson\")\ncheck_model(glm1)"
+    "text": "Regresión de Poisson en R\n\n\nEn breve, la regresión de Poisson se usa para el modelado de datos discretos que representan el conteo de algún evento.\nEn el ejemplo que consideramos anteriormente, el número de casos de rotavirus es un ejemplo de este tipo de eventos.\nLa razón por la que ese modelo funcionó relativamente bien es porque inadvertidamente impusimos la función de enlace sobre los datos al aplicar la transformación logarítmica.\nVeamos que sucede al implementarla en R\n\n\n\n\nglm1 &lt;- glm(cases ~ TXK + UPM, data = rot_berlin_out, family = \"poisson\")\ncheck_model(glm1)"
   },
   {
     "objectID": "index.html#regresión-de-poisson-en-r-1",
@@ -368,7 +368,7 @@
     "href": "index.html#regresión-binomial-negativa",
     "title": "Estadística aplicada con R",
     "section": "Regresión binomial negativa",
-    "text": "Regresión binomial negativa\n\n\nVemos que el modelo usando la regresión de Poisson no mejora mucho en términos de los supuestos.\nComo mencionamos, el gráfico de sobredispersión ya nos da un indicativo de que el modelo es incorrecto.\nUna alternativa para lidiar con sobredispersión es usar la regresión binomial negativa\nPara ello, usaremos la librería MASS que ofrece esta funcionalidad\n\n\n\n\nlibrary(MASS)\nglm2 &lt;- glm.nb(cases ~ TXK + UPM, data = rot_berlin)\ncheck_model(glm2)"
+    "text": "Regresión binomial negativa\n\n\nVemos que el modelo usando la regresión de Poisson no mejora mucho en términos de los supuestos.\nComo mencionamos, el gráfico de sobredispersión ya nos da un indicativo de que el modelo es incorrecto.\nUna alternativa para lidiar con sobredispersión es usar la regresión binomial negativa\nPara ello, usaremos la librería MASS que ofrece esta funcionalidad\n\n\n\n\nlibrary(MASS)\nglm2 &lt;- glm.nb(cases ~ TXK + UPM, data = rot_berlin_out)\ncheck_model(glm2)"
   },
   {
     "objectID": "index.html#regresión-binomial-negativa-1",
@@ -396,7 +396,7 @@
     "href": "index.html#comparación-de-modelos",
     "title": "Estadística aplicada con R",
     "section": "Comparación de modelos",
-    "text": "Comparación de modelos\n\n\nComparemos primero todos los modelos que hemos llevado a cabo hasta aquí\n\n\n\n\ncompare_performance(lm1, lm2, lm3, glm1, glm2, rank = T)\n\n# Comparison of Model Performance Indices\n\nName |  Model |   RMSE |  Sigma | AIC weights | AICc weights | BIC weights | Performance-Score\n----------------------------------------------------------------------------------------------\nglm2 | negbin | 32.373 |  1.024 |       0.946 |        0.946 |       0.946 |            79.39%\nlm3  |     lm |  0.460 |  0.471 |       0.054 |        0.054 |       0.054 |            43.41%\nglm1 |    glm | 21.666 |  2.877 |    1.54e-74 |     1.77e-74 |    4.57e-74 |            24.07%\nlm1  |     lm | 15.258 | 16.438 |    5.02e-13 |     9.14e-14 |    7.37e-16 |            13.18%\nlm2  |     lm | 18.239 | 18.675 |    1.86e-15 |     1.86e-15 |    1.86e-15 |             8.86%"
+    "text": "Comparación de modelos\n\n\nComparemos primero todos los modelos que hemos llevado a cabo hasta aquí\n\n\n\n\ncompare_performance(lm1, lm2, lm3, lm4, glm1, glm2, rank = T)\n\n# Comparison of Model Performance Indices\n\nName |  Model |   RMSE |  Sigma | AIC weights | AICc weights | BIC weights | Performance-Score\n----------------------------------------------------------------------------------------------\nglm2 | negbin | 20.876 |  1.029 |       0.888 |        0.888 |       0.888 |            79.33%\nlm4  |     lm |  0.411 |  0.421 |       0.112 |        0.112 |       0.112 |            47.53%\nlm3  |     lm |  0.460 |  0.471 |    9.54e-07 |     9.60e-07 |    9.25e-07 |            39.90%\nglm1 |    glm | 17.426 |  2.423 |    1.98e-44 |     2.28e-44 |    5.83e-44 |            21.18%\nlm1  |     lm | 15.258 | 16.438 |    8.90e-18 |     1.63e-18 |    1.27e-20 |             7.94%\nlm2  |     lm | 18.239 | 18.675 |    3.29e-20 |     3.31e-20 |    3.19e-20 |             2.58%"
   },
   {
     "objectID": "index.html#jasp",
@@ -411,5 +411,26 @@
     "title": "Estadística aplicada con R",
     "section": "¡Gracias!",
     "text": "¡Gracias!"
+  },
+  {
+    "objectID": "index.html#introducción-smaller",
+    "href": "index.html#introducción-smaller",
+    "title": "Estadística aplicada con R",
+    "section": "Introducción {,smaller}",
+    "text": "Introducción {,smaller}\n\n\nEs una extensión de la regresión lineal (simple) con la que concluimos el módulo anterior.\nEs usada para predecir una sola variable continua (y) en función de múltiples predictores continuos (un set de variables X).\nTiene prácticamente los mismos supuestos que la regresión lineal simple:\n\nLinearidad de los predictores\nHomogeneidad de la varianza (homocedasticidad)\nIndependencia de los errores (residuos)\nNormalidad de los residuos\nIndependencia de los predictores\n\nUn ejemplo de una regresión múltiple podría expresarse mediante la siguiente ecuación\n\n\n\n\\[\\begin{align}\ny &= \\beta_0 + \\beta_1\\,X_1 + \\beta_2\\,X_2 \\dots \\beta_n\\,X_n\n\\end{align}\\]"
+  },
+  {
+    "objectID": "index.html#removiendo-outliers",
+    "href": "index.html#removiendo-outliers",
+    "title": "Estadística aplicada con R",
+    "section": "Removiendo outliers",
+    "text": "Removiendo outliers\n\n\nLa distancia de Cook nos ha ayudado a identificar una observación claramente influyente.\nPara continuar, removeremos esa observación para ver que tanto ayuda a nuestro análisis.\n\n\n\n\nrot_berlin &lt;- rot_berlin[-22, ]\nlm4 &lt;- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin)\ncheck_model(lm4)"
+  },
+  {
+    "objectID": "index.html#removiendo-outliers-1",
+    "href": "index.html#removiendo-outliers-1",
+    "title": "Estadística aplicada con R",
+    "section": "Removiendo outliers",
+    "text": "Removiendo outliers"
   }
 ]
