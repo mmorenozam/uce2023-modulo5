@@ -155,6 +155,8 @@ rot_berlin <- rot_berlin %>%
             TXK = mean(TXK),
             TNK = mean(TNK),
             UPM = mean(UPM))
+rot_berlin$month <- as.factor(rot_berlin$month)
+rot_berlin$week <- as.factor(rot_berlin$week)
 ```
 
 ## Modelo completo
@@ -394,8 +396,8 @@ check_model(lm3)
 . . . 
 
 ```{r echo=T, eval=F, error=T, fig.align='center', fig.width=8, fig.height=10}
-rot_berlin <- rot_berlin[-22, ]
-lm4 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin)
+rot_berlin_out <- rot_berlin[-22, ]
+lm4 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)
 check_model(lm4)
 ```
 
@@ -478,13 +480,10 @@ plot(p1) + plot(p2)
 
 -   Como mencioné al final del anterior módulo, el coeficiente de determinación es una métrica mal usada.
 
--   Librerías como `performance` que tienen cerca de 63000 descargas por mes y en total casi 2 millones de descargas [a la fecha](https://easystats.github.io/performance/index.html){target="_blank"} (09.04.2013) en que he finalizado este módulo, incluye al coeficiente de determinación como un estadístico que "mide" que tan bueno es un modelo.
+-   Mediante la función `compare_performance` de la librería `performance`, se puede obtener un gráfico de telarañas que permite ver como el $R^2$ no sirve de nada ante modelos mejor formulados.
 
--   Aunque debo reconocer que los creadores de esta librería han introducido una capacidad en la misma que permite evidenciar esta falacia.
+-   Ahora recordemos que al final eliminamos un outlier con el modelo que mejores diagnósticos terminamos. Para poner a todos los modelos candidatos en igualdad de condiciones, los corremos de nuevo sin ese outlier (además de utilizar una variable previamente transformada para los modelos 3 y 4, ya que `performance` no es capaz de retransformar por si solo)
 
--   Mediante la función `compare_performance`, se puede obtener un gráfico de telarañas que permite ver como el $R^2$ no sirve de nada ante modelos mejor formulados.
-
--   En la sección que acabamos de pasar, los modelos candidatos los guarde en objetos de R que ahora veremos que nos dicen del $R^2$ (recuerden que el modelo final fue el resultado de un proceso lógico y que cumplió de la manera más satisfactoria a nuestro alcance los supuestos del método). 
 
 :::
 
@@ -493,9 +492,18 @@ plot(p1) + plot(p2)
 ```{r echo=T, eval=T, error=T, fig.align='center', fig.width=5, fig.height=5}
 rot_berlin$cases_comp <- rot_berlin$cases + 1
 rot_berlin_out$cases_comp <- rot_berlin_out$cases + 1
-lm3 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin)
-lm4 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin_out)
-plot(compare_performance(lm1, lm2, lm3, lm4))
+lm1.1 <- lm(cases ~ FM + RSK + SHK_TAG + PM + TMK + TXK + TNK + UPM, data = rot_berlin_out)
+lm2.1 <- lm(cases ~ TXK + UPM, data = rot_berlin_out)
+lm3.1 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin_out)
+lm4.1 <- lm(log(cases_comp) ~ TXK + UPM, data = rot_berlin_out)
+
+compare_performance(lm1.1, lm2.1, lm3.1, lm4.1, rank = T)
+```
+
+. . .
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=5, fig.height=5}
+plot(compare_performance(lm1.1, lm2.1, lm3.1, lm4.1))
 ```
 
 ## Sobre el $R^2$ de nuevo {.smaller .scrollable visibility="uncounted"}
@@ -507,7 +515,7 @@ plot(compare_performance(lm1, lm2, lm3, lm4))
 . . .
 
 ```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-check_model(lm1)
+check_model(lm1.1)
 ```
 
 # Introducción a modelos lineales generalizados
@@ -595,20 +603,71 @@ check_model(glm2)
 
 ::: incremental
 
--   Comparemos primero todos los modelos que hemos llevado a cabo hasta aquí
+-   Comparemos primero todos los modelos que hemos llevado a cabo hasta aquí sin rankearlos
 
 :::
 
 . . .
 
 ```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-compare_performance(lm1, lm2, lm3, lm4, glm1, glm2, rank = T)
+library(flextable)
+colformat_double(flextable(compare_performance(lm1.1, lm2.1, lm4.1, glm1, glm2)), digits = 3)
 ```
+
+## Comparación de modelos {visibility="uncounted"}
+
+::: incremental
+
+-   Ahora rankeados
+
+:::
+
+. . .
+
+```{r echo=T, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
+colformat_double(flextable(compare_performance(lm1.1, lm2.1, lm4.1, glm1, glm2, rank = T)), digits = 3)
+```
+
+## Consideraciones sobre la comparación de modelos {visibility="uncounted"}
+
+::: incremental
+
+-   La versatilidad de `performance` es que nos permite comparar entre modelos provenientes de distintas metodologías estadísticas (hace no más de 5 años eso no era posible).
+
+-   Sin embargo, hay que tener en cuenta que para que las comparaciones sean válidas, los modelos tienen que haber sido ajustados sobre los mismos datos.
+
+-   Por ejemplo, no hubiese sido correcto en este ejemplo comparar todos los modelos que llevamos a cabo sin que estos hubiesen sido ajustados sobre la tabla de datos sin el outlier.
+
+:::
+
+## Ejercicio 5.2
+
+::: incremental
+
+Anteriormente mencionamos que los datos del rotavirus tienen una característica temporal. A partir de los modelos que mejor desempeño mostraron, trata de agregar un efecto temporal ya sea con los meses o las semanas epidemiológicas. ¿Qué notas de extraño en los resultados?
+
+:::
 
 # Antes de terminar
 
 ## JASP
 
 ![](images/jasp.png){fig-align="center"}
+
+## JASP {visibility="uncounted" .smaller}
+
+::: incremental
+
+-   JASP es un software estadístico de licencia libre desarrollado por la Universidad de Amsterdam.
+
+-   Tiene un funcionamiento similar a SPSS con la diferencia de que realiza los análisis en tiempo real sin necesidad de un botón de ejecución.
+
+-   Esta basado en R y presenta la alternativa de llevar a cabo también metodologías Bayesianas de una manera simple.
+
+-   Es una buena alternativa para análisis estadísticos sencillos mediante una interface amigable e intuitiva.
+
+-   Desventajas: no tenemos la libertad de realizar muchos más análisis como en R, todavía se encuentra en etapas tempranas de desarrollo y tiende a presentar aún varios *bugs* y no es aún confiable para análisis muy complejos.
+
+:::
 
 # ¡Gracias!
