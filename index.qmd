@@ -403,7 +403,7 @@ check_model(lm4)
 
 
 ```{r echo=F, eval=T, error=T, fig.align='center', fig.width=8, fig.height=10}
-rot_berlin_out <- rot_berlin[-22, ]
+rot_berlin_out  <-  rot_berlin[-22, ]
 lm4 <- lm(log(cases + 1) ~ TXK + UPM, data = rot_berlin_out)
 check_model(lm4)
 ```
